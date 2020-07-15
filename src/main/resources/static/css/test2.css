@@ -1,0 +1,92 @@
+* {box-sizing: border-box;}
+body {
+    font: 18px Colibry, Arial sans-serif;
+    color: #222;
+    margin: 0;
+}
+header{   background: #d8f1d1 ;
+          padding: 5px;
+          text-align: left;
+          color: #000;
+}
+footer {
+           background: #d8f1d1 ;
+           padding: 5px;
+           text-align: right;
+           color: #000;
+}
+footer {
+    clear: both;
+}
+aside,
+section {
+    padding: 10px;
+}
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+nav ul li {
+    padding: 10px;
+    padding-left: 15px;
+    #border-bottom: 1px dotted #333;
+}
+nav ul li a {display: block;
+    color: #333;
+    text-decoration: none;
+}
+nav ul li a:hover {
+    color: #c71551;
+    #transform: scale(1.05);
+    text-decoratsion: underline;
+}
+.scale {
+    transition: 0.5s; /* Время эффекта */
+}
+aside {
+    width: 15%;
+    float: left;
+}
+section {
+    width: 84%;
+    float:right;
+}
+#wrapper {
+    overflow: hidden;
+    background: linear-gradient(to right, #ecf7e9 15%, #fff 15%);
+}
+
+form {
+    display: block;
+    margin: 20px 20px;
+}
+
+table td, th  {
+    padding: 5px;
+}
+
+#td.custom { text-align :left; padding: 5px;}
+
+textarea.w800-h50 { width:800px; height:50px;}
+textarea.w800-h100 { width:800px; height:100px;}
+textarea.w800-h150 { width:800px; height:150px;}
+textarea.w800-h200 { width:800px; height:200px;}
+textarea.w800-h250 { width:800px; height:250px;}
+textarea.w800-h300 { width:800px; height:300px;}
+textarea.w800-h350 { width:800px; height:350px;}
+textarea.w800-h400 { width:800px; height:400px;}
+textarea.w800-h450 { width:800px; height:450px;}
+textarea.w800-h500 { width:800px; height:500px;}
+
+.w50 {width : 50px;}
+.w100 {width : 100px;}
+.w110 {width : 110px;}
+.w120 {width : 120px;}
+.w130 {width : 130px;}
+.w140 {width : 140px;}
+.w150 {width : 150px;}
+.w200 {width : 200px;}
+
+
+.valign-t {vertical-align: top;}

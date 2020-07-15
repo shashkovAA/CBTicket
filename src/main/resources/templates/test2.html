@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CBTicket Test Page</title>
+    <link   th:href="@{/css/test2.css}" rel="stylesheet" />
+    <link   th:href="@{/css/util.css}" rel="stylesheet" />
+    <script th:src="@{angular.js}"></script>
+    <script th:src="@{/js/test2.js}"></script>
+
+</head>
+<body ng-app="CBTicket" ng-controller="TestController">
+      <header>
+        <h3>Тестирование CBTicket API</h3>
+    </header>
+    <div id="wrapper">
+        <aside>
+            <nav>
+                <ul>
+                    <li><a href="#" ng-click="switch(1)";>Home</a></li>
+                    <li/>
+                    <li><a href="#" ng-click="switch(2)";>POST /api/ticket/add</a></li>
+                    <li><a href="#" ng-click="switch(3)";>GET  /api/ticket/{id}</a></li>
+                    <li><a href="#" ng-click="switch(4)";>GET  /api/ticket/find</a></li>
+                    <li><a href="#" ng-click="switch(5)";>PUT  /api/ticket/cancel/{id}</a></li>
+                    <li><a href="#" ng-click="switch(6)";>PUT  /api/ticket/delete/{id}</a></li>
+                    <li><a href="#" ng-click="switch(7)";>GET  /api/ticket/job</a></li>
+                    <li><a href="#" ng-click="switch(8)";>PUT  /api/ticket/update</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <section>
+            <div ng-show = "home">
+                <article>Home page</article>
+                <br/>
+                <table border="1">
+                    <tr>
+                        <th>Method</th>
+                        <th>Url</th>
+                        <th>RequestBody</th>
+                        <th>ResponseBody</th>
+                        <th>Description</th>
+                    </tr>
+
+                    <tr th:each="apiMethod : ${apiCBTicketMethodList}">
+                        <td th:text="${apiMethod.method}">method</td>
+                        <td th:text="${apiMethod.url}">url</td>
+                        <td th:text="${apiMethod.requestBody}">requestBody</td>
+                        <td th:text="${apiMethod.responseBody}">responseBody</td>
+                        <td th:text="${apiMethod.description}">description</td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-show = "form2">
+
+                <article>POST /api/ticket/add</article>
+
+                <form ng-submit="form2_addTicket()" >
+
+                    <table border="0">
+
+                        <tr>
+                            <th>Input</th>
+                            <th/>
+                            <th>Output</th>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">callback number*:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" required type=text ng-model="form2_ticket.cbNumber" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">callback date:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" type=text ng-model="form2_ticket.cbDate" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">callback originator:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" type=text ng-model="form2_ticket.cbOriginator" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">url:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" type=text ng-model="form2_ticket.cbUrl" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">ucid_old:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" type=text ng-model="form2_ticket.ucidOld" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">callback type:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" type=text ng-model="form2_ticket.cbType" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">callback source:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" type=text ng-model="form2_ticket.cbSource" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">max attempts:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" type=text ng-model="form2_ticket.cbMaxAttempts" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">attempts timeout (min):</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" type=text ng-model="form2_ticket.cbAttemptsTimeout" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <td class ="w100"/>
+
+                            <td valign="top">
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-center p-t-10 p-b-0">Request JSON:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0">
+                                            <textarea  class="w800-h100">{"cbNumber":"{{form2_ticket.cbNumber}}","cbDate":"{{form2_ticket.cbDate}}","cbOriginator":"{{form2_ticket.cbOriginator}}","cbUrl":"{{form2_ticket.cbUrl}}","ucidOld":"{{form2_ticket.ucidOld}}","cbType":"{{form2_ticket.cbType}}","cbSource":"{{form2_ticket.cbSource}}","cbMaxAttempts":"{{form2_ticket.cbMaxAttempts}},"cbAttemptsTimeout":"{{form2_ticket.cbAttemptsTimeout}}""}</textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center p-t-10 p-b-0">Response JSON:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0">
+                                            <textarea  class="w800-h100" ng-model="form2_addTicketResult"></textarea>
+                                        </td>
+                                    </tr>
+
+                                </table>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <br/>
+
+                    <table border="0">
+                        <tr>
+                            <td >
+                                <input class ="w120" type="submit" value="Ok"/>
+                            </td>
+                            <td>
+                                <input class ="w120" type="button" value="Clear"  ng-click="clearForm2()" />
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </form>
+
+            </div>
+            <div ng-show = "form3">
+
+                <article>GET  /api/ticket/{id}</article>
+
+                <form ng-submit="form3_getTicketById()" >
+
+                    <table border="0">
+
+                        <tr>
+                            <th>Input</th>
+                            <th/>
+                            <th>Output</th>
+                        </tr>
+
+                        <tr>
+                            <td class="valign-t">
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">Id*:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" required type=text ng-model="form3_ticketId" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <td class ="w100"/>
+
+                            <td class="valign-t">
+                                <textarea  class="w800-h200" ng-model="form3_getTicketByIdResult"></textarea>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <br/>
+
+                    <table border="0">
+
+                        <tr>
+                            <td >
+                                <input class ="w120" type="submit" value="Ok"/>
+                            </td>
+                            <td>
+                                <input class ="w120" type="button" value="Clear"  ng-click="clearForm3()" />
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </form>
+
+            </div>
+            <div ng-show = "form4">
+
+                <article>GET  /api/ticket/find</article>
+
+                <form ng-submit="form4_getTicketsByNumber()" >
+
+                    <table border="0">
+
+                        <tr>
+                            <th>Input</th>
+                            <th/>
+                            <th>Output</th>
+                        </tr>
+
+                        <tr>
+                            <td class="valign-t">
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-left p-t-5 p-b-0">cb_number*:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" required type=text ng-model="form4_cbNumber" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <td class ="w100"/>
+
+                            <td class="valign-t" >
+                                <textarea  class="w800-h400" ng-model="form4_getTicketsByNumberResult"></textarea>
+                            </td>
+                        </tr>
+
+
+                    </table>
+
+                    <br/>
+
+                    <table border="0">
+                        <tr>
+                            <td >
+                                <input class ="w120" type="submit" value="Ok"/>
+                            </td>
+                            <td>
+                                <input class ="w120" type="button" value="Clear"  ng-click="clearForm4()" />
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </form>
+
+
+            </div>
+            <div ng-show = "form5">
+
+                <article>PUT  /api/ticket/cancel/{id}</article>
+
+                <form ng-submit="form5_cancelTicket()" >
+
+                    <table border="0">
+
+                        <tr>
+                            <th>Input</th>
+                            <th/>
+                            <th>Output</th>
+                        </tr>
+
+                        <tr>
+                            <td class="valign-t">
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-left p-t-5 p-b-0">Id*:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" required type=text ng-model="form5_Id" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <td class ="w100"/>
+
+                            <td class="valign-t" >
+                                <textarea  class="w800-h100" ng-model="form5_cancelTicketResult"></textarea>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <br/>
+
+                    <table border="0">
+                        <tr>
+                            <td >
+                                <input class ="w120" type="submit" value="Ok"/>
+                            </td>
+                            <td>
+                                <input class ="w120" type="button" value="Clear"  ng-click="clearForm5()" />
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </form>
+
+            </div>
+            <div ng-show = "form6">
+
+                <article>DELETE  /api/ticket/delete/{id}</article>
+
+                <form ng-submit="form6_deleteTicket()" >
+
+                    <table border="0">
+
+                        <tr>
+                            <th>Input</th>
+                            <th/>
+                            <th>Output</th>
+                        </tr>
+
+                        <tr>
+                            <td class="valign-t">
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-left p-t-5 p-b-0">Id*:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" required type=text ng-model="form6_Id" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <td class ="w100"/>
+
+                            <td class="valign-t" >
+                                <textarea  class="w800-h100" ng-model="form6_deleteTicketResult"></textarea>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <br/>
+
+                    <table border="0">
+                        <tr>
+                            <td >
+                                <input class ="w120" type="submit" value="Ok"/>
+                            </td>
+                            <td>
+                                <input class ="w120" type="button" value="Clear"  ng-click="clearForm6()" />
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </form>
+
+
+            </div>
+            <div ng-show = "form7">
+
+                <article>GET  /api/ticket/job</article>
+
+                <form ng-submit="form7_getTicketsForJob()" >
+
+                    <table border="0">
+
+                        <tr>
+                            <th>Input</th>
+                            <th/>
+                            <th>Output</th>
+                        </tr>
+
+                        <tr>
+                            <td class="valign-t">
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-left p-t-5 p-b-0">count*:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w150" required type=text ng-model="form7_jobCount" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <td class ="w100"/>
+
+                            <td class="valign-t" >
+                                <textarea  class="w800-h400" ng-model="form7_getTicketsForJobResult"></textarea>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <br/>
+
+                    <table border="0">
+                        <tr>
+                            <td >
+                                <input class ="w120" type="submit" value="Ok"/>
+                            </td>
+                            <td>
+                                <input class ="w120" type="button" value="Clear"  ng-click="clearForm7()" />
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </form>
+
+
+            </div>
+            <div ng-show = "form8">
+
+                <article>PUT /api/ticket/update</article>
+
+                <form ng-submit="form8_updateTicket()" >
+
+                    <table border="0">
+
+                        <tr>
+                            <th>Input</th>
+                            <th/>
+                            <th>Output</th>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">completion code:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0" >
+                                            <select class="w200" ng-model="form8_select" ng-change="form8_updateSelectedCompCode()">
+                                            <option value="">---Please select---</option>
+                                            <option th:each="compcode : ${compCodeList}" th:value="${compcode.sysname}" th:text="${compcode.name}"></option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                     <tr>
+                                        <td class="text-left p-t-10 p-b-0" >ucid:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w200"  type=text  ng-model="form8_ucid" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">callId:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w200"  type=text  ng-model="form8_callId" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">phantom number:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w200" type=text ng-model="form8_phNumber" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-left p-t-10 p-b-0">operator number:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0"><input class="w200" type=text ng-model="form8_opNumber" /></td>
+                                    </tr>
+
+                                </table>
+                            </td>
+
+                            <td class ="w100"/>
+
+                            <td valign="top">
+                                <table  border="0" >
+                                    <tr>
+                                        <td class="text-center p-t-10 p-b-0">Ticket JSON:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0">
+                                            <textarea  class="w800-h200" ng-model="form8_oneTicketInDialingStateResult"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center p-t-10 p-b-0">Response JSON:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-t-0">
+                                            <textarea  class="w800-h100" ng-model="form8_updateTicketResult"></textarea>
+                                        </td>
+                                    </tr>
+
+                                </table>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <br/>
+
+                    <table border="0">
+                        <tr>
+                            <td >
+                                <input class ="w120" type="button" value="Get Ticket"  ng-click="form8_getOneTicketInDialingState()" ng-disabled="form8_getTicketBtn"/>
+                            </td>
+                            <td >
+                                <input class ="w120" type="submit" value="Update" ng-disabled="form8_submitBtn"/>
+                            </td>
+                            <td>
+                                <input class ="w120" type="button" value="Clear"  ng-click="clearForm8()" ng-disabled="form8_clearBtn"/>
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </form>
+
+            </div>
+     
+        </section>
+    </div>
+
+<!--      <footer>
+          Author: Shashkov A.A.
+      </footer>-->
+
+</body>
+</html>

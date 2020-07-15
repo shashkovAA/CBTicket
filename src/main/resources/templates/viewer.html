@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        #tabs {border-bottom:1px solid #ccc;height:33px;margin:0 0 10px;padding-top:5px;background:#eee;}
+        #tabs a {float:left;margin-left:2px;border-radius:3px 3px 0 0;border:1px solid #eee;border-bottom-color:#ccc;color:#08c;height:32px;line-height:32px;padding:0 12px;text-decoration:none;}
+        #tabs a:hover {background:#ddd;color:#058;border-color:#ddd #ddd #ccc;}
+        #tabs a.active {background:#fff;color:#555;border-color:#ccc #ccc #fff;}
+        #tabs a.active:hover {background:#fff;color:#555;border-color:#ccc #ccc #fff;}
+        #tabs_data article {display:none;border:0;}
+       #tabs_data article div {font-size:13px;}
+    </style>
+</head>
+<body>
+<nav id="tabs">
+    <a href="#" onclick="tab_click(0);">tab 1</a>
+    <a href="#" onclick="tab_click(1);">tab 2</a>
+    <a href="#" onclick="tab_click(2);">tab 3</a>
+</nav>
+<div id="tabs_data">
+    <article> contents of tab 1</article>
+    <article> contents of tab 2</article>
+    <article> contents of tab 3</article>
+</div>
+<script>
+    var tabActive=1, tabs=document.getElementById('tabs').getElementsByTagName('A'), tabs_data=document.getElementById('tabs_data').getElementsByTagName('article');
+    function tab_click(x){
+        if(x > -1 && x < tabs.length && x < tabs_data.length){
+            tabs[tabActive].setAttribute('class','');
+            tabs_data[tabActive].style.display='none';
+            tabActive=x;
+            tabs[tabActive].setAttribute('class','active');
+            tabs_data[tabActive].style.display='block';
+        } return false;
+    }tab_click(0);
+    document.onkeydown=function (evnt){
+        if(evnt.keyCode==37 || evnt.keyCode==39)
+        tab_click(tabActive+evnt.keyCode-38);
+    }
+</script>
+</body>
+</html>

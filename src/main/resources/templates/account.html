@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>CBTicket Users</title>
+        <script th:src="@{angular.js}"></script>
+        <script th:src="@{/js/mainApp.js}"></script>
+        <script th:src="@{/js/account.js}"></script>
+        <link   th:href="@{/css/common.css}" rel="stylesheet" />
+    <head>
+<body ng-app="ManagementModule" ng-controller="UserController">
+    <h3>
+        User management page
+    </h3>
+
+    <a title="New User" ng-click="createUser()">
+        <img class="scale" th:src="@{/images/add2.png}" width="40" height="40" ng-show = "!showForm"/>
+    </a>
+
+    <div ng-show="showForm">
+
+        <form name="userForm" ng-submit="submitUser()" >
+            <table border="0">
+
+                <h4>{{formHeader}}</h4>
+
+                <tr>
+                    <td>Username* :</td>
+                    <td><input class="medium" name="userName" type="text" ng-model="user.username" required /></td>
+                </tr>
+                <tr>
+                    <td>Password* :</td>
+                    <td><input class="medium" name="userPass" type="password" ng-model="user.password" required /></td>
+                </tr>
+                <tr>
+                    <td>Confirm Password* :</td>
+                    <td><input class="medium" name="userPassConf" type="password" ng-model="confirmPassword" required compare-to="user.password"/>
+                        <span class="red-txt" ng-show="userForm.userPassConf.$error.compareTo">(!)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Fullname :</td>
+                    <td><input name="userFullName" type="text" ng-model="user.fullname" class="medium"/></td>
+                </tr>
+                <tr>
+                    <td>Enabled :</td>
+                    <td><input  type="checkbox" ng-model="user.enabled" ng-disabled="false"/></td>
+                   <!-- <td><input type="checkbox" name="groupName" th:value="false"/></td> -->
+                </tr>
+            </table>
+
+            <br/>
+
+            <table border="0">
+                <tr>
+                    <td ><input type="submit" value="Save" class="blue-button" ng-disabled="userForm.userPassConf.$error.compareTo"/></td>
+                    <td><input type="button" value="Cancel" class="blue-button" ng-click="cancelUser()" /></td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+
+    <br/>
+
+    <table border="1">
+        <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Fullname</th>
+            <th>Enabled</th>
+            <th/>
+            <th/>
+
+        </tr>
+        <!-- $scope.employees -->
+        <tr ng-repeat="user in users">
+            <td> {{ user.username }}</td>
+            <td >{{ user.password }}</td>
+            <td >{{ user.fullname }}</td>
+            <td class="tcentr"><input  type="checkbox" ng-model="user.enabled" ng-disabled="true"/></td>
+            <td>
+                <a title="Edit" ng-click="editUser(user)" ng-class="{'disable': ( showForm ) }">
+                    <img class="scale" th:src="@{/images/edit2.png}" width="25" height="25" />
+                </a>
+            </td>
+            <td>
+                <a title="Delete" ng-confirm-click="Are you sure to delete this user?" confirmed-click="deleteUser(user)" ng-class="{'disable': ( showForm ) }">
+                    <img class="scale" th:src="@{/images/delete2.png}" width="25" height="25" />
+                </a>
+            </td>
+        </tr>
+
+    </table>
+
+    <br/>
+
+
+</body>
+</html>

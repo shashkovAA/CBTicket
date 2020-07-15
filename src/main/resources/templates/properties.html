@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>CBTicket Properties</title>
+        <script th:src="@{angular.js}"></script>
+        <script th:src="@{/js/mainApp.js}"></script>
+        <script th:src="@{/js/properties.js}"></script>
+        <link   th:href="@{/css/properties.css}" rel="stylesheet" />
+    <head>
+<body ng-app="ManagementModule" ng-controller="PropertyController">
+    <h3>
+        Properties CBTicket application
+    </h3>
+
+    <a title="New property" ng-click="createProperty()">
+        <img class="scale" th:src="@{/images/add2.png}" width="40" height="40" ng-show = "!showForm"/>
+    </a>
+
+    <div ng-show="showForm">
+
+        <form ng-submit="submitProperty()" >
+            <table border="0">
+
+                <h4>{{formHeader}}</h4>
+
+                <tr>
+                    <td>Name* :</td>
+                    <td><input type="text" ng-model="propertyForm.name" required class="standard"/></td>
+                </tr>
+                <tr>
+                    <td>Value* :</td>
+                    <td><input type="text" ng-model="propertyForm.value" required class="standard"/></td>
+                </tr>
+                <tr>
+                    <td>Description :</td>
+                    <td><input type="text" ng-model="propertyForm.description" class="long"/></td>
+                </tr>
+            </table>
+
+            <br/>
+
+            <table border="0">
+                <tr>
+                    <td ><input type="submit" value="Save" class="blue-button" /></td>
+                    <td><input type="button" value="Cancel" class="blue-button" ng-click="cancelFormBtn()" /></td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+
+    <div ng-show="form2">
+        <h4>Import properties file</h4>
+
+        <form ng-submit="form2_importFile()" >
+            <table border="0">
+                <tr>
+                    <td><input type="file" file-model="propFile"/></td>
+                </tr>
+                <tr>
+                    <td >
+                        <input type="submit" value="Import" />
+                        <input type="button" value="Cancel" ng-click="cancelForm2Btn()" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <br/>
+
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Description</th>
+            <th>
+                <a title="Import file" ng-click="showImport()">
+                    <img class="scale" th:src="@{/images/import2.png}" width="25" height="25" ng-show = "!showForm"/>
+                </a>
+            </th>
+            <th>
+                <a title="Export file" ng-click="form2_exportFile()">
+                    <img class="scale" th:src="@{/images/export2.png}" width="25" height="25" ng-show = "!showForm"/>
+                </a>
+            </th>
+        </tr>
+        <!-- $scope.employees -->
+        <tr ng-repeat="property in properties">
+            <td> {{ property.name }}</td>
+            <td >{{ property.value }}</td>
+            <td >{{ property.description }}</td>
+            <td>
+                <a title="Edit" ng-click="editProperty(property)" ng-class="{'disable': ( !{{ property.editable }} || showForm ) }">
+                    <img class="scale" th:src="@{/images/edit2.png}" width="25" height="25" />
+                </a>
+            </td>
+            <td>
+                <a title="Delete" ng-click="deleteProperty(property)" ng-class="{'disable': ( !{{ property.removable }} || showForm ) }">
+                    <img class="scale" th:src="@{/images/delete2.png}" width="25" height="25" />
+                </a>
+            </td>
+        </tr>
+
+    </table>
+
+    <br/>
+
+
+</body>
+</html>

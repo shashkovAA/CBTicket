@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CBTicket</title>
+</head>
+<body>
+<h2>Application CBTicket home page</h2>
+<h3>API methods</h3>
+<h4>Property methods :</h4>
+    <table border="1">
+        <tr>
+            <th>Method</th>
+            <th>Url</th>
+            <th>RequestBody</th>
+            <th>ResponseBody</th>
+            <th>Description</th>
+        </tr>
+
+        <tr th:each="apiMethod : ${apiPropertyMethodList}">
+            <td th:text="${apiMethod.method}">method</td>
+            <td th:text="${apiMethod.url}">url</td>
+            <td th:text="${apiMethod.requestBody}">requestBody</td>
+            <td th:text="${apiMethod.responseBody}">responseBody</td>
+            <td th:text="${apiMethod.description}">description</td>
+        </tr>
+    </table>
+<br/>
+<h4>CBTicket methods :</h4>
+    <table border="1">
+        <tr>
+            <th>Method</th>
+            <th>Url</th>
+            <th>RequestBody</th>
+            <th>ResponseBody</th>
+            <th>Description</th>
+        </tr>
+
+        <tr th:each="apiMethod : ${apiCBTicketMethodList}">
+            <td th:text="${apiMethod.method}">method</td>
+            <td th:text="${apiMethod.url}">url</td>
+            <td th:text="${apiMethod.requestBody}">requestBody</td>
+            <td th:text="${apiMethod.responseBody}">responseBody</td>
+            <td th:text="${apiMethod.description}">description</td>
+        </tr>
+    </table>
+</body>
+</html>

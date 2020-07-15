@@ -1,0 +1,50 @@
+table  {
+    border: 1px, solid black;
+    border-collapse: collapse;
+}
+
+table td, th  {
+    padding: 5px;
+}
+
+td.custom {
+    text-align :left;
+    padding: 1px;
+}
+
+.scale {
+    transition: 0.25s; /* Время эффекта */
+}
+.scale:hover {
+    transform: scale(1.30); /* Увеличиваем масштаб */
+    cursor: pointer;
+}
+
+a.disable {
+   pointer-events: none;
+   cursor: default;
+   opacity:0.4
+}
+a.enable {
+
+    opacity:1
+
+}
+
+input.short {
+    width : 150px;
+}
+
+input.standard {
+    width : 150px;
+}
+
+input.long {
+    width : 400px;
+}
+
+button.standard {
+    width : 150px;
+}
+
+
