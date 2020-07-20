@@ -30,7 +30,7 @@ public class APIController {
         UserDAO userDAO = userRepo.findByUsername(username);
         log.info(session.getUuid() + " | Get User from DB " + userDAO.toString());
 
-        return new User(userDAO);
+        return userDAO.toUser();
     }
 
 

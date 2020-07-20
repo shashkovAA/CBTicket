@@ -6,23 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.wawulya.CBTicket.data.JpaApiLogtRepository;
-import ru.wawulya.CBTicket.data.JpaCompletionCodeRepository;
 import ru.wawulya.CBTicket.enums.LogLevel;
 import ru.wawulya.CBTicket.model.CompletionCode;
 import ru.wawulya.CBTicket.model.Session;
-import ru.wawulya.CBTicket.model.Ticket;
-import ru.wawulya.CBTicket.modelDAO.ApiLogDAO;
-import ru.wawulya.CBTicket.modelDAO.CompletionCodeDAO;
-import ru.wawulya.CBTicket.modelDAO.TicketDAO;
-import ru.wawulya.CBTicket.service.CompCodeDataService;
 import ru.wawulya.CBTicket.service.DataService;
 import ru.wawulya.CBTicket.utility.Utils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController

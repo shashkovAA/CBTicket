@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CBTicket Logs</title>
+    <script th:src="@{angular.js}"></script>
+    <script th:src="@{/js/mainApp.js}"></script>
+    <script th:src="@{/js/logs.js}"></script>
+    <link   th:href="@{/css/common.css}" rel="stylesheet" />
+    <head>
+    <body ng-app="ManagementModule" ng-controller="LogsController">
+    <h3>
+        Logs management page
+    </h3>
+
+
+        <table border="1">
+            <tr>
+                <th>Filename</th>
+                <th>Size</th>
+                <th>Modify</th>
+            </tr>
+
+            <tr ng-repeat="log in logs">
+                <td> <a href="api/logs/download/{{log.filename}}">{{log.filename}}</a></td>
+                <td >{{ log.filesize }}</td>
+                <td >{{ log.lastModifyDate }}</td>
+
+            </tr>
+
+        </table>
+
+        <br/>
+
+    </body>
+</html>

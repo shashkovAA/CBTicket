@@ -13,13 +13,13 @@ import javax.sql.DataSource;
 @PropertySource("classpath:application.properties")
 public class DataConfig {
 
-    @Value("${datasource.mssql.driverClassName}")
+    @Value("${datasource.driverClassName}")
     private String driverClassName;
-    @Value("${datasource.mssql.url}")
+    @Value("${datasource.url}")
     private String url;
-    @Value("${datasource.mssql.username}")
+    @Value("${datasource.username}")
     private String username;
-    @Value("${datasource.mssql.password}")
+    @Value("${datasource.password}")
     private String password;
 
     @Bean

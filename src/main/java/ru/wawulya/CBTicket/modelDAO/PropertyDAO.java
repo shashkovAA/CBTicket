@@ -37,14 +37,14 @@ public class PropertyDAO {
     @Column(columnDefinition = "bit default 1")
     private boolean removable;
 
-    public PropertyDAO(Property property) {
+   /* public PropertyDAO(Property property) {
         id = property.getId();
         name = property.getName();
         value = property.getValue();
         description = property.getDescription();
         editable = property.isEditable();
         removable = property.isRemovable();
-    }
+    }*/
 
     public PropertyDAO(String name, String value, String description, boolean editable, boolean removable) {
         this.name = name;

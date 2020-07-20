@@ -2,13 +2,17 @@ package ru.wawulya.CBTicket.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.wawulya.CBTicket.config.FileStorageConfig;
 import ru.wawulya.CBTicket.error.FileStorageException;
+import ru.wawulya.CBTicket.error.MyFileNotFoundException;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,7 +61,7 @@ public class FileStorageService {
         }
     }
 
-    /*public Resource loadFileAsResource(String fileName) {
+    public Resource loadFileAsResource(String fileName) {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
@@ -69,5 +73,5 @@ public class FileStorageService {
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
-    }*/
+    }
 }

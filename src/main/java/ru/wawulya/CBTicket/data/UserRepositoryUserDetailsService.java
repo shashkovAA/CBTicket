@@ -7,7 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.wawulya.CBTicket.model.User;
-import ru.wawulya.CBTicket.model.Users;
+import ru.wawulya.CBTicket.modelCache.Users;
+
 
 @Slf4j
 @Service

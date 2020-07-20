@@ -19,17 +19,16 @@ public class User implements UserDetails {
     private String fullname;
     private String username;
     private String password;
-    private boolean isEnabled;
+    private boolean enabled;
 
-    public User(UserDAO userDAO) {
+   /* public User(UserDAO userDAO) {
 
         this.id = userDAO.getId();
         this.fullname = userDAO.getFullname();
         this.username = userDAO.getUsername();
         this.password = userDAO.getPassword();
         this.isEnabled = userDAO.isEnabled();
-
-    }
+    }*/
 
     public UserDAO toUserDAO() {
         UserDAO userDAO = new UserDAO();
@@ -37,7 +36,7 @@ public class User implements UserDetails {
         userDAO.setUsername(this.username);
         userDAO.setPassword(this.password);
         userDAO.setFullname(this.fullname);
-        userDAO.setEnabled(this.isEnabled);
+        userDAO.setEnabled(this.enabled);
         return userDAO;
     }
 
@@ -74,7 +73,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     @Override
@@ -84,7 +83,7 @@ public class User implements UserDetails {
                 ", fullname='" + fullname + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", isEnabled=" + isEnabled +
+                ", isEnabled=" + enabled +
                 '}';
     }
 }

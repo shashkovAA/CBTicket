@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.wawulya.CBTicket.data.*;
 
-import ru.wawulya.CBTicket.enums.CompCodeEnum;
+import ru.wawulya.CBTicket.enums.CompCodeSysnameEnum;
 import ru.wawulya.CBTicket.enums.LogLevel;
 import ru.wawulya.CBTicket.enums.PropertyNameEnum;
 import ru.wawulya.CBTicket.enums.TicketFieldsEnum;
@@ -19,14 +18,13 @@ import ru.wawulya.CBTicket.error.BadRequestException;
 import ru.wawulya.CBTicket.error.ForbiddenException;
 import ru.wawulya.CBTicket.error.NotFoundException;
 import ru.wawulya.CBTicket.model.*;
+import ru.wawulya.CBTicket.modelCache.Properties;
 import ru.wawulya.CBTicket.modelDAO.*;
 import ru.wawulya.CBTicket.service.DataService;
 import ru.wawulya.CBTicket.utility.Utils;
 
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -34,15 +32,18 @@ import java.util.stream.Collectors;
 public class ApiTicketController {
 
     private Utils utils;
+    private Properties properties;
     private DataService dataService;
 
     private ObjectMapper Obj = new ObjectMapper();
 
     @Autowired
     public ApiTicketController(DataService dataService,
-                               Utils utils) {
+                               Utils utils,
+                               Properties properties) {
         this.dataService = dataService;
         this.utils = utils;
+        this.properties = properties;
     }
 
     @PostMapping(value = "/ticket/add", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -85,7 +86,7 @@ public class ApiTicketController {
         String cbOriginatorFromJson = jsonNode.path(TicketFieldsEnum.CB_ORIGINATOR).asText();
         log.info(sessionId + " | Get cbOriginator from Json :" + cbOriginatorFromJson);
         if (cbOriginatorFromJson.isEmpty())
-            cbOriginatorFromJson = dataService.findPropertyByName(PropertyNameEnum.DEFAULT_ORIGINATOR).getValue();
+            cbOriginatorFromJson = properties.getPropertyByName(PropertyNameEnum.DEFAULT_ORIGINATOR).getValue();
 
         String cbUrlFromJson = jsonNode.path(TicketFieldsEnum.CB_URL).asText();
         log.info(sessionId + " | Get cbUrl from Json :" + cbUrlFromJson);
@@ -102,14 +103,14 @@ public class ApiTicketController {
         int cbMaxAttemtsFromJson = jsonNode.path(TicketFieldsEnum.CB_MAX_ATTEMPTS).asInt();
         log.info(sessionId + " | Get cbMaxAttempts from Json :" + cbMaxAttemtsFromJson);
         if (cbMaxAttemtsFromJson == 0)
-            cbMaxAttemtsFromJson = Integer.valueOf(dataService.findPropertyByName(PropertyNameEnum.MAX_CALLBACK_ATTEMPTS).getValue());
+            cbMaxAttemtsFromJson = Integer.valueOf(properties.getPropertyByName(PropertyNameEnum.MAX_CALLBACK_ATTEMPTS).getValue());
 
         int cbAttemtsTimeoutFromJson = jsonNode.path(TicketFieldsEnum.CB_ATTEMPTS_TIMEOUT).asInt();
         log.info(sessionId + " | Get cbAttemptsTimeout from Json :" + cbAttemtsTimeoutFromJson);
         if (cbAttemtsTimeoutFromJson == 0)
-            cbAttemtsTimeoutFromJson = Integer.valueOf(dataService.findPropertyByName(PropertyNameEnum.CALLBACK_ATTEMPTS_TIMEOUT).getValue());
+            cbAttemtsTimeoutFromJson = Integer.valueOf(properties.getPropertyByName(PropertyNameEnum.CALLBACK_ATTEMPTS_TIMEOUT).getValue());
 
-        CompletionCodeDAO compCodeDefault = dataService.findCompCodeDAOBySysname(CompCodeEnum.NOT_CALLED);
+        CompletionCodeDAO compCodeDefault = dataService.findCompCodeDAOBySysname(CompCodeSysnameEnum.NOT_CALLED);
 
         TicketDAO ticketDAO = new TicketDAO(cbNumber, cbDateT, compCodeDefault);
 
@@ -204,7 +205,6 @@ public class ApiTicketController {
         Ticket uTicket = dataService.updateTicket(ticket,currentTime);
 
         dataService.saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, utils.createJsonStr(sessionId, ticket), utils.createJsonStr(sessionId, uTicket),"200 OK");
-
         return new RequestResult("Success","");
     }
 

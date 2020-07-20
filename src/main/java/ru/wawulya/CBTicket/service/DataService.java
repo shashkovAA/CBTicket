@@ -1,20 +1,19 @@
 package ru.wawulya.CBTicket.service;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import ru.wawulya.CBTicket.data.*;
 import ru.wawulya.CBTicket.enums.*;
-import ru.wawulya.CBTicket.error.ForbiddenException;
-import ru.wawulya.CBTicket.error.NotFoundException;
 import ru.wawulya.CBTicket.model.*;
+import ru.wawulya.CBTicket.modelCache.Properties;
+import ru.wawulya.CBTicket.modelCache.Users;
 import ru.wawulya.CBTicket.modelDAO.*;
 
 import java.io.*;
@@ -29,13 +28,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Configuration
+@Service
 public class DataService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     private Users users;
+    private Properties properties;
 
     private JpaCompletionCodeRepository compCodeRepo;
     private JpaPropertyRepository propRepo;
@@ -51,7 +51,8 @@ public class DataService {
                        JpaTicketRepository ticketRepo,
                        JpaApiLogtRepository logRepo,
                        JpaUserRepository userRepo,
-                       Users users) {
+                       Users users,
+                       Properties properties) {
         this.compCodeRepo = compCodeRepo;
         this.propRepo = propRepo;
         this.paramsRepo = paramsRepo;
@@ -59,69 +60,74 @@ public class DataService {
         this.logRepo = logRepo;
         this.userRepo = userRepo;
         this.users = users;
+        this.properties = properties;
+
+        this.initProperties();
+        this.initCompletionCodes();
+        this.initUsers();
     }
 
     //<editor-fold desc="CompletionCode section">
 
     public void initCompletionCodes() {
+
         log.info("Initialize completion codes ...");
 
         Optional<CompletionCodeDAO> oCompletionCodeDAO = null;
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.NOT_CALLED);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.NOT_CALLED);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.NOT_CALLED + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.NOT_CALLED, CompCodeNameEnum.NOT_CALLED, "Обратный вызов не совершался", true));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.NOT_CALLED + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.NOT_CALLED, CompCodeSysnameEnum.NOT_CALLED, "Обратный вызов не совершался", true));
         }
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.DIALING);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.DIALING);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.DIALING + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.DIALING, CompCodeNameEnum.DIALING, "Обратный вызов в процессе набора", false));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.DIALING + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.DIALING, CompCodeSysnameEnum.DIALING, "Обратный вызов в процессе набора", false));
         }
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.COMPLETED);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.COMPLETED);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.COMPLETED + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.COMPLETED, CompCodeNameEnum.COMPLETED, "Обратный вызов завершен", false));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.COMPLETED + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.COMPLETED, CompCodeSysnameEnum.COMPLETED, "Обратный вызов завершен", false));
         }
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.CANCELED);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.CANCELED);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.CANCELED + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.CANCELED, CompCodeNameEnum.CANCELED, "Обратный вызов отменен", false));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.CANCELED + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.CANCELED, CompCodeSysnameEnum.CANCELED, "Обратный вызов отменен", false));
         }
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.BUSY);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.BUSY);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.BUSY + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.BUSY, CompCodeNameEnum.BUSY, "Обратный вызов не завершен. Получен сигнал занятости абонента", true));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.BUSY + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.BUSY, CompCodeNameEnum.BUSY, "Обратный вызов не завершен. Получен сигнал занятости абонента", true));
         }
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.NETWORK_BUSY);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.NETWORK_BUSY);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.NETWORK_BUSY + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.NETWORK_BUSY, CompCodeNameEnum.NETWORK_BUSY, "Обратный вызов не завершен. Получен сигнал занятости не сети", true));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.NETWORK_BUSY + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.NETWORK_BUSY, CompCodeSysnameEnum.NETWORK_BUSY, "Обратный вызов не завершен. Получен сигнал занятости не сети", true));
         }
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.NO_ANSWER);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.NO_ANSWER);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.NO_ANSWER + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.NO_ANSWER, CompCodeNameEnum.NO_ANSWER, "Обратный вызов не завершен. Нет ответа абонента", true));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.NO_ANSWER + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.NO_ANSWER, CompCodeSysnameEnum.NO_ANSWER, "Обратный вызов не завершен. Нет ответа абонента", true));
         }
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.DROP_BY_OPERATOR);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.DROP_BY_OPERATOR);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.DROP_BY_OPERATOR + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.DROP_BY_OPERATOR, CompCodeNameEnum.DROP_BY_OPERATOR, "Обратный вызов не завершен. Отменено оператором", true));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.DROP_BY_OPERATOR + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.DROP_BY_OPERATOR, CompCodeSysnameEnum.DROP_BY_OPERATOR, "Обратный вызов не завершен. Отменено оператором", true));
         }
 
-        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeEnum.UNDEFINED);
+        oCompletionCodeDAO = compCodeRepo.findBySysname(CompCodeSysnameEnum.UNDEFINED);
         if (!oCompletionCodeDAO.isPresent()) {
-            log.debug("CompletionCode [" + CompCodeEnum.UNDEFINED + "] not found in database and will be added");
-            compCodeRepo.save(new CompletionCodeDAO(CompCodeEnum.UNDEFINED, CompCodeNameEnum.UNDEFINED, "Статус обратного вызова не определен", true));
+            log.debug("CompletionCode [" + CompCodeSysnameEnum.UNDEFINED + "] not found in database and will be added");
+            compCodeRepo.save(new CompletionCodeDAO(CompCodeNameEnum.UNDEFINED, CompCodeSysnameEnum.UNDEFINED, "Статус обратного вызова не определен", true));
         }
-
     }
 
     public CompletionCode getOrCreateCompCode(String sysname) {
@@ -212,14 +218,11 @@ public class DataService {
 
         List<Ticket> tikets = new ArrayList<>();
 
-        CompletionCodeDAO complCodeCalling = this.findCompCodeDAOBySysname(CompCodeEnum.DIALING);
+        CompletionCodeDAO complCodeCalling = this.findCompCodeDAOBySysname(CompCodeSysnameEnum.DIALING);
 
-        Property property = this.findPropertyByName(PropertyNameEnum.MAX_CALLBACK_ATTEMPTS);
-        String attemptsCount = property.getValue();
-
-
-        List<TicketDAO> jobList = ticketRepo.findCallBackList(currentTime, attemptsCount)
+        List<TicketDAO> jobList = ticketRepo.findCallBackList(currentTime)
                 .stream()
+                .filter(t -> t.getAttemptCount() < t.getTicketParamsDAO().getCbMaxAttempts())
                 .limit(count)
                 .peek(t -> t.setAttemptCount(t.getAttemptCount() + 1))
                 .peek(t -> t.setCompletionCodeDAO(complCodeCalling))
@@ -255,12 +258,12 @@ public class DataService {
         if (ticket.getAttemptCount() >= ticket.getTicketParams().getCbMaxAttempts())
             ticketDAO.setFinished(true);
         else {
-            Timestamp curCbDate = ticket.getCbDate();
-
+            //Timestamp curCbDate = ticket.getCbDate();
+            Timestamp nextCbDate = currentTime;
             int timeout = ticket.getTicketParams().getCbAttemptsTimeout();
-            curCbDate.setTime(curCbDate.getTime() + TimeUnit.MINUTES.toMillis(timeout));
+            nextCbDate.setTime(currentTime.getTime() + TimeUnit.MINUTES.toMillis(timeout));
 
-            ticketDAO.setCbDate(curCbDate);
+            ticketDAO.setCbDate(nextCbDate);
         }
 
         AttemptDAO attemptDAO = ticketDAO.getAttemptDAOs().get(lastAttemptIndex);
@@ -278,7 +281,7 @@ public class DataService {
         Ticket ticket = null;
         TicketDAO ticketDAO = null;
 
-        CompletionCodeDAO completionCodeDAO = this.findCompCodeDAOBySysname(CompCodeEnum.CANCELED);
+        CompletionCodeDAO completionCodeDAO = this.findCompCodeDAOBySysname(CompCodeSysnameEnum.CANCELED);
 
         Optional<TicketDAO> opTicketDAO = ticketRepo.findById(id);
 
@@ -319,7 +322,7 @@ public class DataService {
 
         Ticket ticket = null;
 
-        CompletionCodeDAO complCodeCalling = this.findCompCodeDAOBySysname(CompCodeEnum.DIALING);
+        CompletionCodeDAO complCodeCalling = this.findCompCodeDAOBySysname(CompCodeSysnameEnum.DIALING);
 
         TicketDAO ticketDAO = ticketRepo.findCallBackListInDialingState(complCodeCalling.getId());
 
@@ -389,13 +392,19 @@ public class DataService {
             log.debug("Property ["+PropertyNameEnum.CALLBACK_ATTEMPTS_TIMEOUT+"] not found in database and will be added with value [1]");
             propRepo.save(new PropertyDAO(PropertyNameEnum.CALLBACK_ATTEMPTS_TIMEOUT, "1", "Таймаут в минутах между попытками calback-a, если соединения не произошло", true, false));
         }
+
+        List<Property> propList = findAllProperties();
+        log.debug("Loaded " + propList.size()+ " properties from DB.");
+
+        propList.forEach(property-> properties.addProperty(property));
+        log.debug(properties.toString());
     }
 
     public Property addProperty(Property property) {
         PropertyDAO propertyDAO;
         Property prop = null;
         try {
-            propertyDAO = propRepo.save(new PropertyDAO(property));
+            propertyDAO = propRepo.save(property.toPropertyDAO());
             prop = propertyDAO.toProperty();
         } catch (Exception except)   {
             log.error("Inserting property with non-unique name is not allowed!");
@@ -403,7 +412,7 @@ public class DataService {
         return prop;
     }
 
-    public List<PropertyDAO> insertPropertyToDB(UUID sessionId , Path path) {
+   /* public List<PropertyDAO> insertPropertyToDB(UUID sessionId , Path path) {
 
         List<PropertyDAO> propertyDAOS = new ArrayList<>();
 
@@ -502,7 +511,7 @@ public class DataService {
         });
 
         return listInsertedPropertyDOA;
-    }
+    }*/
 
     public List<PropertyDAO> insertPropertyToDBv2(UUID sessionId , Path path) {
 
@@ -552,11 +561,11 @@ public class DataService {
         return propRepo.findAll(pageRequest);
     }
 
-    public List<Property> findAllProperties(Pageable pageRequest) {
+   /* public List<Property> findAllProperties(Pageable pageRequest) {
         Page<PropertyDAO> propertyDAOS = propRepo.findAll(pageRequest);
         List<Property > propList = propertyDAOS.stream().map(p ->p.toProperty()).collect(Collectors.toList());
         return propList;
-    }
+    }*/
 
     public List<Property> findAllProperties() {
         return propRepo.findAll().stream().map(p->p.toProperty()).collect(Collectors.toList());
@@ -583,6 +592,12 @@ public class DataService {
         return property;
     }
 
+    public PropertyDAO addProperty(PropertyDAO propertyDAO) {
+
+        return propRepo.save(propertyDAO);
+    }
+
+    @Async
     public Property updateProperty(Property property) {
 
         PropertyDAO propertyDAO = null;
@@ -604,6 +619,7 @@ public class DataService {
         return propertyDAO.toProperty();
     }
 
+    @Async
     public Long deleteProperty(Long id) {
         Long propId = 0L;
 
@@ -617,18 +633,15 @@ public class DataService {
         return propId;
     }
 
-    public PropertyDAO addProperty(PropertyDAO propertyDAO) {
-        return propRepo.save(propertyDAO);
-    }
 
 
     //</editor-fold>
 
 
     //<editor-fold desc="Logging section">
+
     @Async
     public void saveLog(String sessionId, String level, String logMethod, String logApiUrl, String requestBody, String responseBody, String status) {
-        log.debug("Save log to DB");
         logRepo.save(new ApiLogDAO(sessionId, LogLevel.INFO,logMethod,logApiUrl, requestBody,responseBody, status));
     }
 
@@ -645,6 +658,9 @@ public class DataService {
 
         userList.forEach(user-> users.addUser(user));
         log.debug(users.toString());
+
+        users.addUser(createDefaultUser());
+
     }
 
     public List<User> getAllUsers() {
@@ -652,7 +668,7 @@ public class DataService {
 
         List<User> users = usersDAO
                 .stream()
-                .map(u -> new User(u))
+                .map(u -> u.toUser())
                 .collect(Collectors.toList());
 
         return users;
@@ -673,6 +689,15 @@ public class DataService {
         return usr;
     }
 
+    public User createDefaultUser() {
+        User defaultUser = new User();
+        defaultUser.setId(0L);
+        defaultUser.setUsername("partner");
+        defaultUser.setPassword("$2a$10$4Qk1ZhxOwlitmE63mljScOx9oKSY9jtMurwYdDV8aRNXV76sLrE2i");
+        defaultUser.setEnabled(true);
+        return defaultUser;
+    }
+
     @Async
     public User updateUser(User user) {
 
@@ -684,7 +709,7 @@ public class DataService {
             userDAO = oUserDAO.get();
 
             userDAO.setUsername(user.getUsername());
-            userDAO.setPassword(user.getPassword());
+            userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
             userDAO.setFullname(user.getFullname());
             userDAO.setEnabled(user.isEnabled());
 

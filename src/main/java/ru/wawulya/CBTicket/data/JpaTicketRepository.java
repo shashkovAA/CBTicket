@@ -14,9 +14,9 @@ import java.util.Optional;
 
 public interface JpaTicketRepository extends JpaRepository<TicketDAO, Long> {
 
-    @Query(value = "select t.* from ticket t inner join completion_code c on t.last_completion_code_id = c.Id  where t.finished = 0 and c.recall = 1 and t.attempt_count < :retryCount and cb_date < :timestamp order by cb_date",
+    @Query(value = "select t.* from ticket t inner join completion_code c on t.last_completion_code_id = c.id  where t.finished = 0 and c.recall = 1 and cb_date < :timestamp order by cb_date",
             nativeQuery = true)
-    List<TicketDAO> findCallBackList(@Param("timestamp") Timestamp curTime, @Param("retryCount") String retryCount);
+    List<TicketDAO> findCallBackList(@Param("timestamp") Timestamp curTime);
 
     @Query(value = "select top 1 t.* from ticket t where t.last_completion_code_id = :id order by cb_date",
             nativeQuery = true)

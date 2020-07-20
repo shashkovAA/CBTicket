@@ -1,35 +1,22 @@
 package ru.wawulya.CBTicket.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.wawulya.CBTicket.enums.LogLevel;
-import ru.wawulya.CBTicket.enums.PropertyFieldsEnum;
 import ru.wawulya.CBTicket.error.ApiError;
 import ru.wawulya.CBTicket.error.BadRequestException;
 import ru.wawulya.CBTicket.error.NotFoundException;
 import ru.wawulya.CBTicket.model.*;
-import ru.wawulya.CBTicket.modelDAO.PropertyDAO;
+import ru.wawulya.CBTicket.modelCache.Users;
 import ru.wawulya.CBTicket.service.DataService;
-import ru.wawulya.CBTicket.service.FileStorageService;
 import ru.wawulya.CBTicket.utility.Utils;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -56,7 +43,7 @@ public class ApiUsersController {
         String logApiUrl = "/api/users";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        List<User> userList = users.getAllUsers();
+        List<User> userList = users.getAllUsers().stream().filter(user->!user.getUsername().equals("partner")).collect(Collectors.toList());
 
         dataService.saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,userList),"200 OK");
         return userList;
@@ -90,26 +77,21 @@ public class ApiUsersController {
 
         users.updateUser(user);
 
-        User usr = dataService.updateUser(user);
-
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,usr),utils.createJsonStr(sessionId,usr),"200 OK");
-        return usr;
+        dataService.updateUser(user);
+        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,user),utils.createJsonStr(sessionId,user),"200 OK");
+        return user;
     }
 
     @DeleteMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteUser(@PathVariable("id") Long id) {
         UUID sessionId = new Session().getUuid();
         String logMethod ="DELETE";
-        String logApiUrl = "/api/users/ " + id;
+        String logApiUrl = "/api/users/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        Long userId = dataService.deleteUser(id);
+        users.deleteUser(id);
 
-        if (userId == 0L)
-            throw new NotFoundException(sessionId, logMethod, logApiUrl, "Not found");
-        else
-            users.deleteUser(id);
-
+        dataService.deleteUser(id);
         dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
     }
 

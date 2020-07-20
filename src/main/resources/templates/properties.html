@@ -96,7 +96,7 @@
                 </a>
             </td>
             <td>
-                <a title="Delete" ng-click="deleteProperty(property)" ng-class="{'disable': ( !{{ property.removable }} || showForm ) }">
+                <a title="Delete" ng-confirm-click="Are you sure to delete this property?" confirmed-click="deleteProperty(property)" ng-class="{'disable': ( !{{ property.removable }} || showForm ) }">
                     <img class="scale" th:src="@{/images/delete2.png}" width="25" height="25" />
                 </a>
             </td>

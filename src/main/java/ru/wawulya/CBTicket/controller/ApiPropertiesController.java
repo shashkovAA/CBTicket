@@ -1,30 +1,16 @@
 package ru.wawulya.CBTicket.controller;
 
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.web.PageableDefault;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.wawulya.CBTicket.data.JpaApiLogtRepository;
-import ru.wawulya.CBTicket.data.JpaPropertyRepository;
+
 
 import ru.wawulya.CBTicket.enums.LogLevel;
 import ru.wawulya.CBTicket.enums.PropertyFieldsEnum;
@@ -38,6 +24,7 @@ import ru.wawulya.CBTicket.modelDAO.PropertyDAO;
 import ru.wawulya.CBTicket.service.DataService;
 import ru.wawulya.CBTicket.service.FileStorageService;
 import ru.wawulya.CBTicket.utility.Utils;
+import ru.wawulya.CBTicket.modelCache.Properties;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -54,18 +41,20 @@ public class ApiPropertiesController {
     private FileStorageService fileStorageService;
 
     private DataService dataService;
+    private Properties properties;
     private Utils utils;
 
     @Autowired
-    public ApiPropertiesController(DataService dataService, Utils utils) {
+    public ApiPropertiesController(DataService dataService, Properties properties, Utils utils) {
         this.dataService = dataService;
+        this.properties = properties;
         this.utils = utils;
     }
 
-    @GetMapping(value = "/properties", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Property> getProperties(/*@RequestParam ("page") int page,
+/*   @GetMapping(value = "/properties", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Property> getAllProperties(@RequestParam ("page") int page,
                                            @RequestParam ("size") int size,
-                                           @PageableDefault (sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageRequest*/
+                                           @PageableDefault (sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageRequest
                                             @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
                                             @RequestParam(name = "pageSize",defaultValue = "10") Integer pageSize,
                                             @RequestParam(name = "sortBy", defaultValue = "id") String sortBy
@@ -91,23 +80,39 @@ public class ApiPropertiesController {
         List<Property> propList = dataService.findAllProperties(pageRequest);
 
         //propList.forEach(p->log.info(p.toString()));
-        /*pageList.getContent().forEach( p-> log.info(p.toString()));
+        pageList.getContent().forEach( p-> log.info(p.toString()));
         log.info(String.valueOf("page.getTotalElements() : " + pageList.getTotalElements()));
         log.info(String.valueOf("page.getTotalPages() : " + pageList.getTotalPages()));
-*/
+
+
+        dataService.saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,propList),"200 OK");
+        return propList;
+    }*/
+
+    @GetMapping(value = "/properties", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Property> getAllProperties() {
+        UUID sessionId = new Session().getUuid();
+        String logMethod ="GET";
+        String logApiUrl = "/api/properties";
+        log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
+
+        //List<Property> propList = dataService.findAllProperties();
+        List<Property> propList = properties.getAllProperties();
+        log.debug(properties.toString());
 
         dataService.saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,propList),"200 OK");
         return propList;
     }
 
     @GetMapping(value = "/properties/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Property getProperty(@PathVariable("id") Long id) {
+    public Property getPropertyById(@PathVariable("id") Long id) {
         UUID sessionId = new Session().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/properties/ " + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        Property property = dataService.findPropertyById(id);
+        //Property property = dataService.findPropertyById(id);
+        Property property = properties.getPropertyById(id);
 
         if (property == null)
             throw new NotFoundException(sessionId, logMethod, logApiUrl, "Not found");
@@ -126,7 +131,8 @@ public class ApiPropertiesController {
             log.info(String.format("Header '%s' = %s", key, value));
         });
 
-        Property property = dataService.findPropertyByName(name);
+        //Property property = dataService.findPropertyByName(name);
+        Property property = properties.getPropertyByName(name);
 
         if (property == null) {
             throw new NotFoundException(sessionId, logMethod, logApiUrl, "Not found");
@@ -147,6 +153,8 @@ public class ApiPropertiesController {
 
         if (prop == null)
             throw new BadRequestException(sessionId, logMethod, logApiUrl, "Check log file for details.");
+        else
+            properties.addProperty(prop);
 
         dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,prop),utils.createJsonStr(sessionId,prop),"200 OK");
         return prop;
@@ -159,24 +167,23 @@ public class ApiPropertiesController {
         String logApiUrl = "/api/properties";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        Property prop = dataService.updateProperty(property);
+        properties.updateProperty(property);
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,prop),utils.createJsonStr(sessionId,prop),"200 OK");
-        return prop;
+        dataService.updateProperty(property);
+        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,property),utils.createJsonStr(sessionId,property),"200 OK");
+        return property;
     }
 
     @DeleteMapping(value = "/properties/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteProperty(@PathVariable("id") Long id) {
         UUID sessionId = new Session().getUuid();
         String logMethod ="DELETE";
-        String logApiUrl = "/api/properties/ " + id;
+        String logApiUrl = "/api/properties/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        Long propId = dataService.deleteProperty(id);
+        properties.deleteProperty(id);
 
-        if (propId == 0L)
-            throw new NotFoundException(sessionId, logMethod, logApiUrl, "Not found");
-
+        dataService.deleteProperty(id);
         dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
     }
 
@@ -187,8 +194,12 @@ public class ApiPropertiesController {
         String logApiUrl = "/api/properties/upload?file=" + file.getOriginalFilename();
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
+        //Добавляем список properties в БД
         Path fileStoragePath = fileStorageService.storeFile(sessionId, file);
         List<PropertyDAO> propertyDAOs = dataService.insertPropertyToDBv2(sessionId, fileStoragePath);
+
+        //Добавляем список properties в кэш-модель
+        propertyDAOs.forEach(p->properties.addProperty(p.toProperty()));
 
         dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
         RequestResult result = new RequestResult("Success","Upload "+propertyDAOs.size()+" records from property file ["+file.getOriginalFilename()+"]");
@@ -250,17 +261,6 @@ public class ApiPropertiesController {
 
         return apiError;
     }
-
-    /*@RequestMapping(value = "exportXLS", method = RequestMethod.POST, produces = APP_JSON)
-    @ResponseBody
-    public void getCSV(final HttpServletResponse response, @RequestParam(value = "empId", required = true) final String empId) throws IOException, Exception
-    {
-        final byte[] csv = ExportXLSUtil.getFileBytes(empId); // get the file bytes
-        final OutputStream output = getOutputStream(response);
-        response.setHeader("Content-Disposition", "attachment; filename=documents_" + new DateTime() + ".xls");
-        response.setContentType(CONTENT_TYPE);
-        response.setContentLength(csv.length);
-        write(output, csv);*/
 
 
 }

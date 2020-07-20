@@ -1,20 +1,16 @@
-package ru.wawulya.CBTicket.model;
+package ru.wawulya.CBTicket.modelCache;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.wawulya.CBTicket.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@Slf4j
-@Data
 @Component
 public class Users {
 
-    private Map<Long,User> users = new HashMap<>();
+    private Map<Long, User> users = new TreeMap<>();
 
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();

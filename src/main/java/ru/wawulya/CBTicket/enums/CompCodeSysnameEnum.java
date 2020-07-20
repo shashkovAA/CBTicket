@@ -1,6 +1,6 @@
 package ru.wawulya.CBTicket.enums;
 
-public class CompCodeEnum {
+public class CompCodeSysnameEnum {
     public static final String NOT_CALLED = "not_called";
     public static final String DIALING = "dialing";
     public static final String CANCELED = "canceled";

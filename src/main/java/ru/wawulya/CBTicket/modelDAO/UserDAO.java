@@ -35,13 +35,13 @@ public class UserDAO implements UserDetails {
     private boolean isEnabled;
 
 
-    public UserDAO (User user) {
+/*    public UserDAO (User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.fullname = user.getFullname();
         this.isEnabled = user.isEnabled();
-    }
+    }*/
 
     public User toUser() {
         User user = new User();

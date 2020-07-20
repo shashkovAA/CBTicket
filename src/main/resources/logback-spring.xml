@@ -19,44 +19,66 @@
 
     <appender name="RollingFile"
                              class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${LOGS}/application.log</file>
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-        <pattern>
-            %d{yyyy-MM-dd HH:mm:ss.SSS} | %5p | %15.15t | %30.30C{1.} | %-20.20M | %m%n%wEx
-        </pattern>
-    </encoder>
+        <file>${LOGS}/application.log</file>
 
-    <rollingPolicy
-            class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <!-- rollover daily and when the file reaches 10 MegaBytes -->
-        <fileNamePattern>${LOGS}/archived/application-%d{yyyy-MM-dd}.%i.log
-        </fileNamePattern>
-        <timeBasedFileNamingAndTriggeringPolicy
-                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOGS}/application%i.log</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <maxFileSize>10MB</maxFileSize>
-        </timeBasedFileNamingAndTriggeringPolicy>
-    </rollingPolicy>
-</appender>
+        </triggeringPolicy>
 
-    <appender name="SpringRollingFile"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/spring-boot-logger.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>
                 %d{yyyy-MM-dd HH:mm:ss.SSS} | %5p | %15.15t | %30.30C{1.} | %-20.20M | %m%n%wEx
             </pattern>
         </encoder>
 
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS}/archived/spring-boot-logger-%d{yyyy-MM-dd}.%i.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+   <!--         <rollingPolicy
+                    class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                &lt;!&ndash; rollover daily and when the file reaches 10 MegaBytes &ndash;&gt;
+                <fileNamePattern>${LOGS}/archived/application-%d{yyyy-MM-dd}.%i.log
+                </fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy
+                        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>-->
+    </appender>
+
+    <appender name="SpringRollingFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/spring-boot-logger.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOGS}/spring-boot-logger%i.log</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
         </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} | %5p | %15.15t | %30.30C{1.} | %-20.20M | %m%n%wEx
+            </pattern>
+        </encoder>
+
+            <!--<rollingPolicy
+                    class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                &lt;!&ndash; rollover daily and when the file reaches 10 MegaBytes &ndash;&gt;
+                <fileNamePattern>${LOGS}/archived/spring-boot-logger-%d{yyyy-MM-dd}.%i.log
+                </fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy
+                        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>-->
     </appender>
 
     <!--Данная секция работает для логгера ru.wawulya и будет выводить в оба аппендеры для заданного уравня. Разделить не получилось-->
