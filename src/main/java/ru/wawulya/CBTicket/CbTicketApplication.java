@@ -13,7 +13,7 @@ import ru.wawulya.CBTicket.service.DataService;
 
 @Slf4j
 @SpringBootApplication
-public class CbTicketApplication {
+public class CbTicketApplication  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CbTicketApplication.class, args);

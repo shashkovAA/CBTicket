@@ -33,3 +33,7 @@ build/
 ### Logs ###
 
 logs/
+files/
+data/
+out/
+config/

@@ -37,15 +37,15 @@ import java.util.*;
 @RequestMapping(value = "/api")
 public class ApiPropertiesController {
 
-    @Autowired
-    private FileStorageService fileStorageService;
 
+    private FileStorageService fileStorageService;
     private DataService dataService;
     private Properties properties;
     private Utils utils;
 
     @Autowired
-    public ApiPropertiesController(DataService dataService, Properties properties, Utils utils) {
+    public ApiPropertiesController(FileStorageService fileStorageService, DataService dataService, Properties properties, Utils utils) {
+        this.fileStorageService = fileStorageService;
         this.dataService = dataService;
         this.properties = properties;
         this.utils = utils;
@@ -195,7 +195,7 @@ public class ApiPropertiesController {
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
         //Добавляем список properties в БД
-        Path fileStoragePath = fileStorageService.storeFile(sessionId, file);
+        Path fileStoragePath = fileStorageService.uploadFile(sessionId, file);
         List<PropertyDAO> propertyDAOs = dataService.insertPropertyToDBv2(sessionId, fileStoragePath);
 
         //Добавляем список properties в кэш-модель

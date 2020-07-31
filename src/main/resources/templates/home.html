@@ -3,46 +3,70 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>CBTicket</title>
+    <link   th:href="@{/css/common.css}" rel="stylesheet" />
+    <link   th:href="@{/css/materialize.min.css}" rel="stylesheet" media="screen,projection"/>
+    <head>
 </head>
 <body>
-<h2>Application CBTicket home page</h2>
-<h3>API methods</h3>
-<h4>Property methods :</h4>
-    <table border="1">
-        <tr>
-            <th>Method</th>
-            <th>Url</th>
-            <th>RequestBody</th>
-            <th>ResponseBody</th>
-            <th>Description</th>
-        </tr>
+        <nav>
+            <div class="nav-wrapper">
+                <div class="container">
+                    <ul id="nav-mobile" class="left hide-on-med-and-down">
+                        <li><a href="settings">Settings</a></li>
+                        <li><a href="database">Database</a></li>
+                        <li><a href="test">Testing</a></li>
+                        <li><a href="logs">Logs</a></li>
+                    </ul>
+                    <ul id="nav-mobile2" class="right hide-on-med-and-down">
+                        <li>
+                            <a href="#">Logout</a>
+                        </li>
+                    </ul>
 
-        <tr th:each="apiMethod : ${apiPropertyMethodList}">
-            <td th:text="${apiMethod.method}">method</td>
-            <td th:text="${apiMethod.url}">url</td>
-            <td th:text="${apiMethod.requestBody}">requestBody</td>
-            <td th:text="${apiMethod.responseBody}">responseBody</td>
-            <td th:text="${apiMethod.description}">description</td>
-        </tr>
-    </table>
-<br/>
-<h4>CBTicket methods :</h4>
-    <table border="1">
-        <tr>
-            <th>Method</th>
-            <th>Url</th>
-            <th>RequestBody</th>
-            <th>ResponseBody</th>
-            <th>Description</th>
-        </tr>
+                </div>
+            </div>
+        </nav>
 
-        <tr th:each="apiMethod : ${apiCBTicketMethodList}">
-            <td th:text="${apiMethod.method}">method</td>
-            <td th:text="${apiMethod.url}">url</td>
-            <td th:text="${apiMethod.requestBody}">requestBody</td>
-            <td th:text="${apiMethod.responseBody}">responseBody</td>
-            <td th:text="${apiMethod.description}">description</td>
-        </tr>
-    </table>
+        <div class="container">
+            <h4>Application CBTicket home page</h4>
+            <br/>
+            <h5>Property API methods :</h5>
+                <table border="1">
+                    <tr>
+                        <th>Method</th>
+                        <th>Url</th>
+                        <th>RequestBody</th>
+                        <th>ResponseBody</th>
+                        <th>Description</th>
+                    </tr>
+
+                    <tr th:each="apiMethod : ${apiPropertyMethodList}">
+                        <td th:text="${apiMethod.method}">method</td>
+                        <td th:text="${apiMethod.url}">url</td>
+                        <td th:text="${apiMethod.requestBody}">requestBody</td>
+                        <td th:text="${apiMethod.responseBody}">responseBody</td>
+                        <td th:text="${apiMethod.description}">description</td>
+                    </tr>
+                </table>
+            <br/>
+            <h5>CBTicket API methods :</h5>
+            <table border="1">
+                <tr>
+                    <th>Method</th>
+                    <th>Url</th>
+                    <th>RequestBody</th>
+                    <th>ResponseBody</th>
+                    <th>Description</th>
+                </tr>
+
+                <tr th:each="apiMethod : ${apiCBTicketMethodList}">
+                    <td th:text="${apiMethod.method}">method</td>
+                    <td th:text="${apiMethod.url}">url</td>
+                    <td th:text="${apiMethod.requestBody}">requestBody</td>
+                    <td th:text="${apiMethod.responseBody}">responseBody</td>
+                    <td th:text="${apiMethod.description}">description</td>
+                </tr>
+            </table>
+        </div>>
 </body>
 </html>

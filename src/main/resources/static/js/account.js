@@ -22,10 +22,10 @@ app.controller("UserController", function($scope, $http) {
 
         if ($scope.user.id == 0) {
             method = "POST";
-            url = '/api/users';
+            url = 'api/users';
         } else {
             method = "PUT";
-            url = '/api/users';
+            url = 'api/users';
         }
 
         $http({
@@ -59,7 +59,7 @@ app.controller("UserController", function($scope, $http) {
 
         $http({
             method: 'DELETE',
-            url: '/api/users/' + user.id
+            url: 'api/users/' + user.id
         }).then(_success, _error);
     };
 
@@ -80,7 +80,7 @@ app.controller("UserController", function($scope, $http) {
     function refreshData() {
         $http({
             method: 'GET',
-            url: '/api/users'
+            url: 'api/users'
         }).then(
             function(res) { // success
                 $scope.users = res.data;

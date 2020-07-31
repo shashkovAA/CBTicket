@@ -74,7 +74,6 @@ public class ApiUsersController {
         String logApiUrl = "/api/users";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-
         users.updateUser(user);
 
         dataService.updateUser(user);

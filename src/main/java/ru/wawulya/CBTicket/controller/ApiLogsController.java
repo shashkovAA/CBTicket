@@ -36,12 +36,10 @@ import java.util.stream.Stream;
 @RequestMapping(value = "/api")
 public class ApiLogsController {
 
-    @Autowired
     private Utils utils;
-
-    @Autowired
     private DataService dataService;
 
+    @Autowired
     public ApiLogsController(DataService dataService, Utils utils) {
         this.dataService = dataService;
         this.utils = utils;

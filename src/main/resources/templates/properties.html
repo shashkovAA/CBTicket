@@ -5,6 +5,7 @@
         <script th:src="@{angular.js}"></script>
         <script th:src="@{/js/mainApp.js}"></script>
         <script th:src="@{/js/properties.js}"></script>
+
         <link   th:href="@{/css/properties.css}" rel="stylesheet" />
     <head>
 <body ng-app="ManagementModule" ng-controller="PropertyController">
@@ -80,7 +81,7 @@
                 </a>
             </th>
             <th>
-                <a title="Export file" ng-click="form2_exportFile()">
+                <a title="Export file" th:href="@{/api/properties/export}">
                     <img class="scale" th:src="@{/images/export2.png}" width="25" height="25" ng-show = "!showForm"/>
                 </a>
             </th>
@@ -105,7 +106,6 @@
     </table>
 
     <br/>
-
 
 </body>
 </html>

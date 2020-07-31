@@ -129,7 +129,7 @@ app.controller("PropertyController", function($scope, $http) {
         $scope.form2 = false;
     };
 
-    $scope.form2_exportFile = function() {
+    /*$scope.form2_exportFile = function() {
 
         console.log("Run form2_exportFile ");
 
@@ -144,7 +144,7 @@ app.controller("PropertyController", function($scope, $http) {
                     console.log("Error: " + res.status + " : " + res.data);
                 }
         );
-    };
+    };*/
 
     function _success(res) {
         refreshPropertyData();

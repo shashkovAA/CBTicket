@@ -32,7 +32,6 @@ public class Properties {
             prop.setValue(property.getValue());
             prop.setDescription(property.getDescription());
             prop.setEditable(property.isEditable());
-            prop.setRemovable(property.isRemovable());
         }
     }
 
