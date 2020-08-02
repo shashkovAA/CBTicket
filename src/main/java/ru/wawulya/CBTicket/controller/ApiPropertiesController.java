@@ -224,11 +224,10 @@ public class ApiPropertiesController {
                                                                                 PropertyFieldsEnum.NAME,
                                                                                 PropertyFieldsEnum.VALUE,
                                                                                 PropertyFieldsEnum.DESCRIPTION,
-                                                                                PropertyFieldsEnum.EDITABLE,
-                                                                                PropertyFieldsEnum.REMOVABLE))) {
+                                                                                PropertyFieldsEnum.EDITABLE))) {
             for (Property prop : list) {
                 log.info(prop.toString());
-                csvPrinter.printRecord(Arrays.asList(prop.getName(), prop.getValue(), prop.getDescription(), prop.isEditable(), prop.isRemovable()));
+                csvPrinter.printRecord(Arrays.asList(prop.getName(), prop.getValue(), prop.getDescription(), prop.isEditable()));
             }
 
         } catch (IOException e) {

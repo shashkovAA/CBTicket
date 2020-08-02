@@ -13,9 +13,9 @@
         Properties CBTicket application
     </h3>
 
-    <a title="New property" ng-click="createProperty()">
+    <!--<a title="New property" ng-click="createProperty()">
         <img class="scale" th:src="@{/images/add2.png}" width="40" height="40" ng-show = "!showForm"/>
-    </a>
+    </a>-->
 
     <div ng-show="showForm">
 
@@ -50,7 +50,7 @@
 
     </div>
 
-    <div ng-show="form2">
+    <!--<div ng-show="form2">
         <h4>Import properties file</h4>
 
         <form ng-submit="form2_importFile()" >
@@ -66,7 +66,7 @@
                 </tr>
             </table>
         </form>
-    </div>
+    </div>-->
 
     <br/>
 
@@ -75,7 +75,7 @@
             <th>Name</th>
             <th>Value</th>
             <th>Description</th>
-            <th>
+            <!--<th>
                 <a title="Import file" ng-click="showImport()">
                     <img class="scale" th:src="@{/images/import2.png}" width="25" height="25" ng-show = "!showForm"/>
                 </a>
@@ -84,7 +84,7 @@
                 <a title="Export file" th:href="@{/api/properties/export}">
                     <img class="scale" th:src="@{/images/export2.png}" width="25" height="25" ng-show = "!showForm"/>
                 </a>
-            </th>
+            </th>-->
         </tr>
         <!-- $scope.employees -->
         <tr ng-repeat="property in properties">
@@ -96,11 +96,11 @@
                     <img class="scale" th:src="@{/images/edit2.png}" width="25" height="25" />
                 </a>
             </td>
-            <td>
+           <!-- <td>
                 <a title="Delete" ng-confirm-click="Are you sure to delete this property?" confirmed-click="deleteProperty(property)" ng-class="{'disable': ( !{{ property.removable }} || showForm ) }">
                     <img class="scale" th:src="@{/images/delete2.png}" width="25" height="25" />
                 </a>
-            </td>
+            </td>-->
         </tr>
 
     </table>

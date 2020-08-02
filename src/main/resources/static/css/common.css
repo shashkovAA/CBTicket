@@ -36,10 +36,11 @@ a.enable {
 }
 
 input.short {
-    width : 150px;
+    width : 120px;
+    height: 30px;
 }
 
-input.standard {
+.standard2 {
     width : 150px;
 }
 input.medium {
@@ -64,6 +65,18 @@ nav {
 
 .h50 {
     height: 50%;
+}
+
+input.standard {
+    width : 150px;
+    height: 30px;
+}
+row.no_m_b {
+    margin-bottom : 1px;
+}
+
+.hlink:hover {
+    text-decoration: underline;
 }
 
 

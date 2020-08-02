@@ -561,12 +561,6 @@ public class DataService {
         return propRepo.findAll(pageRequest);
     }
 
-   /* public List<Property> findAllProperties(Pageable pageRequest) {
-        Page<PropertyDAO> propertyDAOS = propRepo.findAll(pageRequest);
-        List<Property > propList = propertyDAOS.stream().map(p ->p.toProperty()).collect(Collectors.toList());
-        return propList;
-    }*/
-
     public List<Property> findAllProperties() {
         return propRepo.findAll().stream().map(p->p.toProperty()).collect(Collectors.toList());
     }
@@ -611,7 +605,6 @@ public class DataService {
             propertyDAO.setValue(property.getValue());
             propertyDAO.setDescription(property.getDescription());
             propertyDAO.setEditable(property.isEditable());
-            propertyDAO.setRemovable(property.isRemovable());
             log.info(propertyDAO.toString());
         }
         propertyDAO = propRepo.save(propertyDAO);

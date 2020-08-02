@@ -3,9 +3,18 @@
 app.controller("SettingsController", function($scope, $http) {
 
     $scope.files = [];
+    $scope.properties = [];
+
     $scope.file = {
         filename: "",
         lastModifyDate:""
+    };
+    $scope.property = {
+         id: 1,
+         name: "",
+         value: "",
+         description: "",
+         editable: true
     };
 
     refreshData();
@@ -17,12 +26,24 @@ app.controller("SettingsController", function($scope, $http) {
             }).then(
                 function(res) { // success
                     $scope.files = res.data;
-                    console.log("res.data: " + angular.toJson($scope.files));
+                },
+                function(res) { // error
+                }
+            );
+
+            $http({
+                method: 'GET',
+                url: '/api/properties'
+            }).then(
+                function(res) { // success
+                    $scope.properties = res.data;
                 },
                 function(res) { // error
                     console.log("Error: " + res.status + " : " + res.data);
                 }
             );
+             $scope.showForm = false;
+             $scope.form2 = false;
         }
 
     $scope.form1_importFile = function() {
@@ -50,7 +71,7 @@ app.controller("SettingsController", function($scope, $http) {
             });
     };
 
-     $scope.deleteFile = function(file) {
+    $scope.form1_deleteFile = function(file) {
             console.log("file.filename: " + file.filename);
             $http({
                 method: 'DELETE',
@@ -58,30 +79,65 @@ app.controller("SettingsController", function($scope, $http) {
             }).then(_success, _error);
         };
 
-    $scope.restartApp = function() {
+    $scope.form2_submitBtn = function() {
+            //console.log("property: " + angular.toJson($scope.property));
 
-        $http({
-                method: 'POST',
-                url: '/api/settings/restart'
-        }).then(
-                function(res) { // success
-                     console.log("res.data: " + res.data);
-                     window.alert(respObj.message);
-                },
-                function(res) { // error
-                   _error(response.data);
+            var method = "PUT";
+            var url = "/api/properties";
+
+            $http({
+                method: method,
+                url: url,
+                data: angular.toJson($scope.property),
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-        );
+            }).then(_success, _error);
+
+             $scope.showForm = false;
+             refreshData();
+
     };
+
+    $scope.form2_cancelBtn = function() {
+        $scope.showForm = false;
+    };
+
+    $scope.form2_editProperty = function(property) {
+            $scope.showForm = true;
+            $scope.property.id = property.id;
+            $scope.property.name = property.name;
+            $scope.property.value = property.value;
+            $scope.property.description = property.description;
+            $scope.property.editable = property.editable;
+            //console.log("property: " + $scope.property);
+    };
+
+     $scope.restartApp = function() {
+
+            $http({
+                    method: 'POST',
+                    url: '/api/settings/restart'
+            }).then(
+                    function(res) { // success
+                         console.log("res.data: " + res.data);
+                         window.alert(respObj.message);
+                    },
+                    function(res) { // error
+                       _error(response.data);
+                    }
+            );
+        };
+
     function _success(res) {
-        refreshData();
-    }
-
+            refreshData();
+        }
     function _error(res) {
-        var data = res.data;
-        var status = res.status;
+                var data = res.data;
+                var status = res.status;
 
-        alert("Error: " + status + ". Message : " + data.message);
-    }
+                alert("Error: " + status + ". Message : " + data.message);
+            }
+
 
 });

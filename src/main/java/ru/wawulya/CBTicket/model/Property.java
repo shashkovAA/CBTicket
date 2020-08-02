@@ -10,7 +10,6 @@ public class Property {
     private String value;
     private String description;
     private boolean editable;
-    private boolean removable;
 
     public PropertyDAO toPropertyDAO() {
         PropertyDAO propertyDAO = new PropertyDAO();
@@ -19,7 +18,6 @@ public class Property {
         propertyDAO.setValue(value);
         propertyDAO.setDescription(description);
         propertyDAO.setEditable(editable);
-        propertyDAO.setRemovable(removable);
         return propertyDAO;
     }
 

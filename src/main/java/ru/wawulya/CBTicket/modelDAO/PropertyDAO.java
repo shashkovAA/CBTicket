@@ -42,7 +42,6 @@ public class PropertyDAO {
         this.value = value;
         this.description = description;
         this.editable = editable;
-        this.removable = removable;
     }
 
     public Property toProperty() {
@@ -52,7 +51,6 @@ public class PropertyDAO {
         prop.setValue(this.value);
         prop.setDescription(this.description);
         prop.setEditable(this.editable);
-        prop.setRemovable(this.removable);
         return prop;
     }
 
@@ -64,7 +62,6 @@ public class PropertyDAO {
                 ", value='" + value + '\'' +
                 ", description='" + description + '\'' +
                 ", editable=" + editable +
-                ", removable=" + removable +
                 '}';
     }
 }

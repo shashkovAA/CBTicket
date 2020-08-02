@@ -8,8 +8,7 @@ app.controller("PropertyController", function($scope, $http) {
         name: "",
         value: "",
         description: "",
-        editable: true,
-        removable: true
+        editable: true
     };
 
     // Now load the data from server
@@ -48,20 +47,20 @@ app.controller("PropertyController", function($scope, $http) {
         $scope.showForm = false;
     };
 
-    $scope.createProperty = function() {
+    /*$scope.createProperty = function() {
         _clearFormData();
          $scope.showForm = true;
          $scope.formHeader = "Add new property :";
-    };
+    };*/
 
-    $scope.deleteProperty = function(property) {
+    /*$scope.deleteProperty = function(property) {
         console.log("propertyForm: " + property.id);
         console.log("propertyForm: " + property.name);
         $http({
             method: 'DELETE',
             url: '/api/properties/' + property.id
         }).then(_success, _error);
-    };
+    };*/
 
     // In case of edit
     $scope.editProperty = function(property) {
@@ -93,11 +92,11 @@ app.controller("PropertyController", function($scope, $http) {
          $scope.form2 = false;
     }
 
-    $scope.showImport = function() {
+   /* $scope.showImport = function() {
         $scope.form2 = true;
-    };
+    };*/
 
-    $scope.form2_importFile = function() {
+    /*$scope.form2_importFile = function() {
 
         $scope.form2 = true;
 
@@ -127,7 +126,7 @@ app.controller("PropertyController", function($scope, $http) {
 
     $scope.cancelForm2Btn = function() {
         $scope.form2 = false;
-    };
+    };*/
 
     /*$scope.form2_exportFile = function() {
 
