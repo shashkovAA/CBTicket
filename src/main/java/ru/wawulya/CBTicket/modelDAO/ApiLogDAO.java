@@ -40,8 +40,8 @@ public class ApiLogDAO {
     @Column(name="status_code")
     private String statusCode;
 
-    @Column(columnDefinition = "varchar(max)")
-    private String message;
+    @Column(columnDefinition = "varchar(100)")
+    private String host;
 
     @Column(name = "session_id", columnDefinition = "varchar(50)")
     private String sessionId;
@@ -66,7 +66,7 @@ public class ApiLogDAO {
         this.sessionId = sessionId;
     }
 
-    public ApiLogDAO(String sessionId, String level, String method, String apiUrl, String requestBody, String responseBody, String statusCode, String message) {
+    public ApiLogDAO(String sessionId, String username, String level, String method, String apiUrl, String requestBody, String responseBody, String statusCode) {
         this.level = level;
         this.method = method;
         this.apiUrl = apiUrl;
@@ -74,6 +74,18 @@ public class ApiLogDAO {
         this.responseBody = responseBody;
         this.statusCode = statusCode;
         this.sessionId = sessionId;
-        this.message = message;
+        this.username = username;
+    }
+
+    public ApiLogDAO(String sessionId, String username, String level, String method, String apiUrl, String requestBody, String responseBody, String statusCode, String host) {
+        this.level = level;
+        this.method = method;
+        this.apiUrl = apiUrl;
+        this.requestBody = requestBody;
+        this.responseBody = responseBody;
+        this.statusCode = statusCode;
+        this.sessionId = sessionId;
+        this.username = username;
+        this.host = host;
     }
 }

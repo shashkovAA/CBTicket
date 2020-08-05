@@ -2,6 +2,7 @@ package ru.wawulya.CBTicket.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class ApiUsersController {
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> getAllUsers() {
 
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/users";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -51,7 +52,7 @@ public class ApiUsersController {
 
     @PostMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public User addUser(@RequestBody User user) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="POST";
         String logApiUrl = "/api/users";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -69,7 +70,7 @@ public class ApiUsersController {
 
     @PutMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public User updateUser(@RequestBody User user) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="PUT";
         String logApiUrl = "/api/users";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -83,7 +84,7 @@ public class ApiUsersController {
 
     @DeleteMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteUser(@PathVariable("id") Long id) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="DELETE";
         String logApiUrl = "/api/users/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -118,6 +119,11 @@ public class ApiUsersController {
         log.error(apiError.toString());
 
         return apiError;
+    }
+
+    @Lookup
+    public Session getSession() {
+        return null;
     }
 
 }

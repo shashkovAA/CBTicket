@@ -98,10 +98,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .httpBasic()
                     .authenticationEntryPoint(authEntryPoint);
 
-            http
-                    .headers()
-                    .frameOptions()
-                    .sameOrigin();
         }
     }
 
@@ -132,6 +128,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     .permitAll()
                     .logoutSuccessUrl("/login");
+
+            http
+                    .headers()
+                    .frameOptions()
+                    .sameOrigin();
         }
 
 

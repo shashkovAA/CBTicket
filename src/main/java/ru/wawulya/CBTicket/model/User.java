@@ -21,14 +21,6 @@ public class User implements UserDetails {
     private String password;
     private boolean enabled;
 
-   /* public User(UserDAO userDAO) {
-
-        this.id = userDAO.getId();
-        this.fullname = userDAO.getFullname();
-        this.username = userDAO.getUsername();
-        this.password = userDAO.getPassword();
-        this.isEnabled = userDAO.isEnabled();
-    }*/
 
     public UserDAO toUserDAO() {
         UserDAO userDAO = new UserDAO();

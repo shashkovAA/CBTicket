@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,7 @@ public class ApiTicketController {
 
     @PostMapping(value = "/ticket/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public RequestResult createCallbackTicket(@RequestBody String jsonString) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="POST";
         String logApiUrl = "/api/ticket/add";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -126,7 +127,7 @@ public class ApiTicketController {
 
     @GetMapping(value = "/ticket/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Ticket getTicketById(@PathVariable Long id) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/ticket/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -142,7 +143,7 @@ public class ApiTicketController {
 
     @GetMapping(value = "/ticket/find", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Ticket> getTicketsByNumber(@RequestParam (name = "number") String number) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/ticket/find?number=" + number;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -158,7 +159,7 @@ public class ApiTicketController {
 
     @GetMapping(value = "/ticket/job", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Ticket> getTicketsForCallBack(@RequestParam (name = "count") int count) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/ticket/job?count=" + count;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -178,7 +179,7 @@ public class ApiTicketController {
 
     @GetMapping(value = "/ticket/dialing", produces = MediaType.APPLICATION_JSON_VALUE)
     public Ticket getOneTicketInDialingState() {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/ticket/dialing";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -195,7 +196,7 @@ public class ApiTicketController {
 
     @PostMapping(value = "/ticket/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public RequestResult updateTicket(@RequestBody Ticket ticket) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="PUT";
         String logApiUrl = "/api/ticket/update";
         log.info(sessionId + " | REST " +  logMethod + " " + logApiUrl);
@@ -210,7 +211,7 @@ public class ApiTicketController {
 
     @PostMapping(value = "/ticket/cancel/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public RequestResult cancelTicketById(@PathVariable Long id) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="PUT";
         String logApiUrl = "/api/ticket/cancel/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -228,7 +229,7 @@ public class ApiTicketController {
 
     @DeleteMapping(value = "/ticket/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public RequestResult deleteTicketById(@PathVariable Long id) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="DELETE";
         String logApiUrl = "/api/ticket/delete/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -289,6 +290,11 @@ public class ApiTicketController {
         log.error(apiError.toString());
 
         return apiError;
+    }
+
+    @Lookup
+    public Session getSession() {
+        return null;
     }
 
 }

@@ -2,6 +2,7 @@ package ru.wawulya.CBTicket.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
@@ -71,7 +72,7 @@ public class ApiSettingsController {
 
     @GetMapping(value = "/settings/files", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ConfigFile> getLogFiles() throws IOException {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/settings/files";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -97,7 +98,7 @@ public class ApiSettingsController {
 
     @PostMapping("/settings/upload")
     public RequestResult uploadFileToDB(@RequestParam("file") MultipartFile file) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="POST";
         String logApiUrl = "/api/settings/upload?file=" + file.getOriginalFilename();
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -112,7 +113,7 @@ public class ApiSettingsController {
 
     @GetMapping("/settings/download/{fileName:.+}")
     public ResponseEntity downloadLogFile(@PathVariable String fileName) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/settings/download/" + fileName;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -139,7 +140,7 @@ public class ApiSettingsController {
 
     @DeleteMapping(value = "/settings/{filename}", produces = MediaType.APPLICATION_JSON_VALUE)
     public RequestResult deleteProperty(@PathVariable("filename") String filename) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="DELETE";
         String logApiUrl = "/api/settings/" + filename;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -155,5 +156,10 @@ public class ApiSettingsController {
 
         dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
         return result;
+    }
+
+    @Lookup
+    public Session getSession() {
+        return null;
     }
 }

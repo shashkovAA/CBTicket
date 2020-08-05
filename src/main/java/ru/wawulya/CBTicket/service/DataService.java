@@ -637,6 +637,14 @@ public class DataService {
     public void saveLog(String sessionId, String level, String logMethod, String logApiUrl, String requestBody, String responseBody, String status) {
         logRepo.save(new ApiLogDAO(sessionId, LogLevel.INFO,logMethod,logApiUrl, requestBody,responseBody, status));
     }
+    @Async
+    public void saveLog(String sessionId, String user, String level, String logMethod, String logApiUrl, String requestBody, String responseBody, String status) {
+        logRepo.save(new ApiLogDAO(sessionId, user, LogLevel.INFO,logMethod,logApiUrl, requestBody,responseBody, status));
+    }
+    @Async
+    public void saveLog(String sessionId, String user, String level, String logMethod, String logApiUrl, String requestBody, String responseBody, String status, String host) {
+        logRepo.save(new ApiLogDAO(sessionId, user, LogLevel.INFO,logMethod,logApiUrl, requestBody,responseBody, status, host));
+    }
 
     //</editor-fold>
 

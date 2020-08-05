@@ -5,6 +5,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -91,7 +92,7 @@ public class ApiPropertiesController {
 
     @GetMapping(value = "/properties", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Property> getAllProperties() {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/properties";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -106,7 +107,7 @@ public class ApiPropertiesController {
 
     @GetMapping(value = "/properties/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Property getPropertyById(@PathVariable("id") Long id) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/properties/ " + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -123,7 +124,7 @@ public class ApiPropertiesController {
 
     @GetMapping(value = "/properties/find", produces = MediaType.APPLICATION_JSON_VALUE)
     public Property getPropertyByName(@RequestHeader Map<String, String> headers, @RequestParam(name = "name") String name) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/properties/find?name=" + name;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -144,7 +145,7 @@ public class ApiPropertiesController {
 
     @PostMapping(value = "/properties", produces = MediaType.APPLICATION_JSON_VALUE)
     public Property addProperty(@RequestBody Property property) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="POST";
         String logApiUrl = "/api/properties";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -162,7 +163,7 @@ public class ApiPropertiesController {
 
     @PutMapping(value = "/properties", produces = MediaType.APPLICATION_JSON_VALUE)
     public Property updateProperty(@RequestBody Property property) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="PUT";
         String logApiUrl = "/api/properties";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -176,7 +177,7 @@ public class ApiPropertiesController {
 
     @DeleteMapping(value = "/properties/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteProperty(@PathVariable("id") Long id) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="DELETE";
         String logApiUrl = "/api/properties/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -189,7 +190,7 @@ public class ApiPropertiesController {
 
     @PostMapping("/properties/upload")
     public RequestResult uploadFileToDB(@RequestParam("file") MultipartFile file) {
-        UUID sessionId = new Session().getUuid();
+        UUID sessionId = getSession().getUuid();
         String logMethod ="POST";
         String logApiUrl = "/api/properties/upload?file=" + file.getOriginalFilename();
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
@@ -259,6 +260,11 @@ public class ApiPropertiesController {
         log.error(apiError.toString());
 
         return apiError;
+    }
+
+    @Lookup
+    public Session getSession() {
+        return null;
     }
 
 
