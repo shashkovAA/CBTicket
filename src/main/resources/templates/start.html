@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CBTicket</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type = "text/javascript" src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script th:src="@{js/materialize.min.js}"></script>
+    <script type = "text/javascript"
+            src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <link   th:href="@{/css/common.css}" rel="stylesheet" />
+    <link   th:href="@{/css/materialize.min.css}" rel="stylesheet" media="screen,projection"/>
+    <head>
+</head>
+<body class="grey lighten-5">
+        <!--<nav>
+            <div class="nav-wrapper">
+                <div class="container">
+                       &lt;!&ndash; <a href="#" class="button-collapse" data-activates="mobile-demo">
+                            <i class="material-icons">menu</i>
+                        </a>&ndash;&gt;
+
+                        <ul class="left hide-on-med-and-down">
+                            <li><a href="/login">Login</a></li>
+                        </ul>
+
+                        &lt;!&ndash;<ul class="side-nav" id="mobile-demo">
+                            <li><a href="/login">Login</a></li>
+                        </ul>&ndash;&gt;
+                </div>
+            </div>
+        </nav>-->
+
+        <nav>
+            <div class="nav-wrapper">
+                <div class="container">
+                    <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                    <ul class="left hide-on-med-and-down">
+                        <ul class="left hide-on-med-and-down">
+                            <li><a href="/login">Login</a></li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <ul class="sidenav" id="mobile-demo">
+            <li><a href="/login">Login</a></li>
+        </ul>
+
+        <div class="container">
+            <h4>Application CBTicket start page</h4>
+            <br/>
+            <h5>
+                Hello World!
+            </h5>
+        </div>
+    </body>
+    <script>
+        $(document).ready(function(){
+            $('.sidenav').sidenav();
+        });
+    </script>
+
+
+</html>

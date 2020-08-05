@@ -2,10 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>CBTicket Properties</title>
-        <script th:src="@{angular.js}"></script>
-        <script th:src="@{/js/mainApp.js}"></script>
-        <script th:src="@{/js/settings.js}"></script>
-        <script th:src="@{js/materialize.min.js}"></script>
         <link   th:href="@{/css/common.css}" rel="stylesheet" />
         <link   th:href="@{/css/materialize.min.css}" rel="stylesheet" media="screen,projection"/>
     <head>
@@ -15,16 +11,16 @@
             <div class="nav-wrapper">
                 <div class="container">
                     <ul id="nav-mobile" class="left hide-on-med-and-down">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="settings">Settings</a></li>
+                        <li><a href="home">Home</a></li>
+                        <li class="active"><a href="settings">Settings</a></li>
                         <li><a href="database">Database</a></li>
                         <li><a href="account">Users</a></li>
-                        <li><a href="test2">Testing</a></li>
+                        <li><a href="test">Testing</a></li>
                         <li><a href="logs">Logs</a></li>
                     </ul>
                     <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
                         <li>
-                            <a href="#">Logout</a>
+                            <a href="logout">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -65,7 +61,7 @@
                     </table>
                 </div>
 
-                <div class="col s6 m5 l5 offset-l1">
+                <div class="col s4 m3 l3 offset-l1">
 
                     <h5>Upload config file :</h5>
 
@@ -84,8 +80,11 @@
                             </div>
 
 
-                            <div class="row center-align">
-                                <input class="standard" type="submit" value="Import" />
+                            <div class="row">
+                                <div class="col">
+                                    <input class="standard" type="submit" value="Import" />
+                                </div>
+
                             </div>
 
                     </form>
@@ -209,6 +208,11 @@
 
         </div>
 
-
     </body>
+
+    <script th:src="@{angular.js}"></script>
+    <script th:src="@{/js/mainApp.js}"></script>
+    <script th:src="@{/js/settings.js}"></script>
+    <script th:src="@{js/materialize.min.js}"></script>
+
 </html>

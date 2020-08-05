@@ -2,31 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>CBTicket Logs</title>
-    <script th:src="@{angular.js}"></script>
-    <script th:src="@{js/materialize.min.js}"></script>
-    <script th:src="@{/js/mainApp.js}"></script>
-    <script th:src="@{/js/logs.js}"></script>
     <link   th:href="@{/css/common.css}" rel="stylesheet" />
     <link   th:href="@{/css/materialize.min.css}" rel="stylesheet" media="screen,projection"/>
     <head>
-    <body ng-app="ManagementModule" ng-controller="LogsController">
+    <body class="grey lighten-5" ng-app="ManagementModule" ng-controller="LogsController">
 
         <nav>
             <div class="nav-wrapper">
-
+                <div class="container">
                     <ul id="nav-mobile" class="left hide-on-med-and-down">
-                        <li><a href="/">Home</a></li>
+                        <li><a href="home">Home</a></li>
                         <li><a href="settings">Settings</a></li>
                         <li><a href="database">Database</a></li>
                         <li><a href="account">Users</a></li>
-                        <li><a href="test2">Testing</a></li>
-                        <li><a href="logs">Logs</a></li>
+                        <li><a href="test">Testing</a></li>
+                        <li class="active"><a href="logs">Logs</a></li>
                     </ul>
-                    <div class="container">
-                        <a href="#" class="right hide-on-med-and-down">Logout</a>
-                    </div>
+                    <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
+                        <li>
+                            <a href="logout">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
         </nav>
 
         <div class="container">
@@ -55,4 +53,8 @@
         <br/>
 
     </body>
+    <script th:src="@{angular.js}"></script>
+    <script th:src="@{js/materialize.min.js}"></script>
+    <script th:src="@{/js/mainApp.js}"></script>
+    <script th:src="@{/js/logs.js}"></script>
 </html>

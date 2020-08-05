@@ -3,6 +3,7 @@ package ru.wawulya.CBTicket.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,7 +37,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-    @Override
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;
+    }
+
+   /* @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
                 .and()
@@ -55,12 +62,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 //.anyRequest().permitAll()
 
-        /*.and()
+        *//*.and()
                 .formLogin()
                 .usernameParameter("user")
                 .passwordParameter("passwd")
                 .loginPage("/login")
-                .defaultSuccessUrl("/settings")*/
+                .defaultSuccessUrl("/settings")*//*
         //.and()
          //       .httpBasic();
 
@@ -68,14 +75,68 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().authenticationEntryPoint(authEntryPoint);
         http.headers().frameOptions().sameOrigin();
         //http.httpBasic();
+    }*/
+
+    @Configuration
+    @Order(1)
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Autowired
+        private AuthenticationEntryPoint authEntryPoint;
+
+        protected void configure(HttpSecurity http) throws Exception {
+            http.cors()
+                    .and()
+                    .csrf()
+                    .disable();
+
+            http
+                    .antMatcher("/api/**")
+                    .authorizeRequests()
+                    .anyRequest()
+                    .hasRole("USER")
+            .and()
+                    .httpBasic()
+                    .authenticationEntryPoint(authEntryPoint);
+
+            http
+                    .headers()
+                    .frameOptions()
+                    .sameOrigin();
+        }
     }
 
+    @Configuration
+    @Order(2)
+    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .cors()
+                    .and()
+                    .csrf()
+                    .disable();
+
+            http
+                    .authorizeRequests()
+                    .antMatchers("/", "/css/**", "/js/**").permitAll()
+                    .anyRequest().authenticated()
+            .and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .defaultSuccessUrl("/home")
+                    .permitAll()
+            .and()
+                    .logout()
+                    .permitAll()
+                    .logoutSuccessUrl("/login");
+        }
+
+
     }
+
 
     /*@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

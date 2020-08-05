@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+
 public class Session {
     public UUID uuid;
 

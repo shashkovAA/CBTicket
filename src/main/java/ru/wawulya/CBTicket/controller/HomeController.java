@@ -10,7 +10,7 @@ import ru.wawulya.CBTicket.model.ApiMethodList;
 
 @Slf4j
 @Controller
-@RequestMapping("/")
+@RequestMapping("/home")
 public class HomeController {
 
     @Autowired

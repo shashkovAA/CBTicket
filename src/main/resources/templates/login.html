@@ -2,21 +2,58 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Taco Cloud</title>
+    <title>CBTicket login</title>
+    <!--Import Google Icon Font-->
+
+    <link   th:href="@{/css/common.css}" rel="stylesheet" />
+    <link   th:href="@{/css/materialize.min.css}" rel="stylesheet" media="screen,projection"/>
+    <script th:src="@{js/materialize.min.js}"></script>
 </head>
-<body>
-    <h1>Login</h1>
-    <div th:if="${error}">
-        Unable to login. Check your username and password.
+    <body class="grey lighten-5">
+
+    <nav>
+        <div class="nav-wrapper">
+
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row center-align">
+            <div class="col s12 ">
+                <h4>Welcome</h4>
+            </div>
+        </div>
+        <div class="row center-align">
+            <div class="col s12">
+                <form method="POST" th:action="@{/login}" id="loginForm">
+                    <div class="row center-align">
+                        <div class="input-field col s4 offset-s4 ">
+                            <input name="username" id="username" type="text" class="validate" required>
+                            <label for="username">Username</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s4 offset-s4 ">
+                            <input name="password" id="password" type="password" class="validate" required>
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+
+                    <input class="standard" type="submit" value="Login"/>
+                </form>
+            </div>
+        </div>
+        <div class="row center-align">
+            <div class="col s12 ">
+                <div  th:if="${errorMessge}">
+                    <span>Unable to login. Check your username and password.</span>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <!-- tag::thAction[] -->
-    <form method="POST" th:action="@{/login}" id="loginForm">
-        <!-- end::thAction[] -->
-        <label for="username">Username: </label>
-        <input type="text" name="user" id="username" style="margin-left: 50px;"/><br/><br/>
-        <label for="password">Password: </label>
-        <input type="password" name="passwd" id="password" style="margin-left: 50px;"/><br/><br/>
-        <input type="submit" value="Login"/>
-    </form>
+
     </body>
+
+
 </html>
