@@ -72,7 +72,7 @@ public class ApiLogsController {
             logs.add(new LogFile(f.getName(), utils.humanReadableByteCountBin(f.length()), utils.convertMilsToDate(f.lastModified())));
         });
 
-        dataService.saveLog(sessionId.toString(), auth.getName(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,logs),"200 OK", request.getRemoteAddr());
+        dataService.getLogService().saveLog(sessionId.toString(), auth.getName(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,logs),"200 OK", request.getRemoteAddr());
         return logs;
     }
 
@@ -96,7 +96,7 @@ public class ApiLogsController {
             e.printStackTrace();
         }
 
-        dataService.saveLog(sessionId.toString(), auth.getName(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,resource),"200 OK", request.getRemoteAddr());
+        dataService.getLogService().saveLog(sessionId.toString(), auth.getName(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,resource),"200 OK", request.getRemoteAddr());
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("text/html"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")

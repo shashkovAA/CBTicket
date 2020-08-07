@@ -36,9 +36,9 @@ public class ApiCompletionCodeController {
         String logApiUrl = "/api/compcode/fetch?sysname=" + sysname;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl );
 
-        CompletionCode completionCode = dataService.getOrCreateCompCode(sysname);
+        CompletionCode completionCode = dataService.getCompCodeDataService().getOrCreateCompCode(sysname);
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "",utils.createJsonStr(sessionId, completionCode), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "",utils.createJsonStr(sessionId, completionCode), "200 OK");
         return completionCode;
     }
 
@@ -49,9 +49,9 @@ public class ApiCompletionCodeController {
         String logApiUrl = "/api/compcode/all";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        List<CompletionCode> completionCodeList = dataService.getAllCompCodes();
+        List<CompletionCode> completionCodeList = dataService.getCompCodeDataService().getAllCompCodes();
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "",utils.createJsonStr(sessionId, completionCodeList), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "",utils.createJsonStr(sessionId, completionCodeList), "200 OK");
         return completionCodeList;
     }
 

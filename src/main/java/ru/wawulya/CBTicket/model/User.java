@@ -2,12 +2,13 @@ package ru.wawulya.CBTicket.model;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.wawulya.CBTicket.modelDAO.RoleDAO;
 import ru.wawulya.CBTicket.modelDAO.UserDAO;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -20,22 +21,29 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private boolean enabled;
+    private Set<Role> roles = new HashSet<>();
 
 
-    public UserDAO toUserDAO() {
+    public UserDAO toUserDAO(Set<RoleDAO> roles) {
         UserDAO userDAO = new UserDAO();
         userDAO.setId(this.id);
         userDAO.setUsername(this.username);
         userDAO.setPassword(this.password);
         userDAO.setFullname(this.fullname);
         userDAO.setEnabled(this.enabled);
+        userDAO.setRoles(roles);
         return userDAO;
+    }
+
+    public void addRole (Role role) {
+        roles.add(role);
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        //return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        return roles;
     }
 
     @Override
@@ -68,14 +76,5 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "id=" + id +
-                ", fullname='" + fullname + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", isEnabled=" + enabled +
-                '}';
-    }
+
 }

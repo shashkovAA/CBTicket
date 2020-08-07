@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
     <head>
         <title>CBTicket Properties</title>
         <link   th:href="@{/css/common.css}" rel="stylesheet" />
@@ -17,10 +18,11 @@
                         <li><a href="account">Users</a></li>
                         <li><a href="test">Testing</a></li>
                         <li><a href="logs">Logs</a></li>
+                        <li><a href="logout">Logout</a></li>
                     </ul>
                     <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
-                        <li>
-                            <a href="logout">Logout</a>
+                        <li sec:authorize="isAuthenticated()">
+                            Hello, <span sec:authentication="name"></span>
                         </li>
                     </ul>
                 </div>

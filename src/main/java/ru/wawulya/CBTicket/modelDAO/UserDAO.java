@@ -1,23 +1,22 @@
 package ru.wawulya.CBTicket.modelDAO;
 
-import lombok.AccessLevel;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import ru.wawulya.CBTicket.model.User;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.Collection;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
 @NoArgsConstructor
 @Table(name="users")
-public class UserDAO implements UserDetails {
+public class UserDAO {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -34,14 +33,9 @@ public class UserDAO implements UserDetails {
     @Column(name="enabled")
     private boolean isEnabled;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<RoleDAO> roles = new HashSet<>();
 
-/*    public UserDAO (User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.fullname = user.getFullname();
-        this.isEnabled = user.isEnabled();
-    }*/
 
     public User toUser() {
         User user = new User();
@@ -50,12 +44,14 @@ public class UserDAO implements UserDetails {
         user.setPassword(this.password);
         user.setFullname(this.fullname);
         user.setEnabled(this.isEnabled);
+        user.setRoles(this.roles.stream().map(RoleDAO::toRole).collect(Collectors.toSet()));
         return user;
     }
 
-    @Override
+   /* @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        //return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        return getRoles();
     }
 
     @Override
@@ -86,7 +82,7 @@ public class UserDAO implements UserDetails {
     @Override
     public boolean isEnabled() {
         return isEnabled;
-    }
+    }*/
 
 
 

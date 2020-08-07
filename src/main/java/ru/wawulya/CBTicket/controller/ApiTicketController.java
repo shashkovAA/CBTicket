@@ -72,7 +72,7 @@ public class ApiTicketController {
             log.info(sessionId + " | Get cb_number from Json :" + cbNumber);
         }
 
-        List<Ticket> uncompleteTickets= dataService.findAllByCbNumber(cbNumber);
+        List<Ticket> uncompleteTickets= dataService.getTicketDataService().findAllByCbNumber(cbNumber);
 
         if (uncompleteTickets.size() != 0)
             throw new ForbiddenException(sessionId, logMethod, logApiUrl, "Forbidden create ticket for number [" + cbNumber + "], bacause it is exist and not in state 'Completed'");
@@ -111,16 +111,16 @@ public class ApiTicketController {
         if (cbAttemtsTimeoutFromJson == 0)
             cbAttemtsTimeoutFromJson = Integer.valueOf(properties.getPropertyByName(PropertyNameEnum.CALLBACK_ATTEMPTS_TIMEOUT).getValue());
 
-        CompletionCodeDAO compCodeDefault = dataService.findCompCodeDAOBySysname(CompCodeSysnameEnum.NOT_CALLED);
+        CompletionCodeDAO compCodeDefault = dataService.getCompCodeDataService().findCompCodeDAOBySysname(CompCodeSysnameEnum.NOT_CALLED);
 
         TicketDAO ticketDAO = new TicketDAO(cbNumber, cbDateT, compCodeDefault);
 
         ticketDAO.setTicketParamsDAO(new TicketParamsDAO(ticketDAO, cbUrlFromJson, ucidOldFromJson, cbTypeFromJson, cbSourceFromJson, cbOriginatorFromJson, cbMaxAttemtsFromJson, cbAttemtsTimeoutFromJson));
         //ticketDAO = ticketRepo.save(ticketDAO);
-        ticketDAO = dataService.save(ticketDAO);
+        ticketDAO = dataService.getTicketDataService().save(ticketDAO);
 
         RequestResult result = new RequestResult("Success","Created ticket for callback: id ["+ticketDAO.getId()+"], number ["+ticketDAO.getCbNumber()+"], date ["+ticketDAO.getCbDate()+"]");
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, jsonString, utils.createJsonStr(sessionId,result), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, jsonString, utils.createJsonStr(sessionId,result), "200 OK");
 
          return result;
     }
@@ -132,12 +132,12 @@ public class ApiTicketController {
         String logApiUrl = "/api/ticket/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        Ticket ticket = dataService.getTicketById(id);
+        Ticket ticket = dataService.getTicketDataService().getTicketById(id);
 
         if (ticket == null)
             throw new NotFoundException(sessionId,logMethod,logApiUrl,"Ticket with id [" + id + "] not found");
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId, ticket), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId, ticket), "200 OK");
         return ticket;
     }
 
@@ -148,12 +148,12 @@ public class ApiTicketController {
         String logApiUrl = "/api/ticket/find?number=" + number;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        List<Ticket> tikets = dataService.getTicketsByNumber(number);
+        List<Ticket> tikets = dataService.getTicketDataService().getTicketsByNumber(number);
 
         if(tikets.size() == 0)
             throw new NotFoundException(sessionId, logMethod, logApiUrl, "Tickets with number [" + number + "] not found.");
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId, tikets), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId, tikets), "200 OK");
         return tikets;
     }
 
@@ -166,14 +166,14 @@ public class ApiTicketController {
 
         Timestamp currentTime =  new Timestamp(new Date().getTime());
 
-        List<Ticket> tikets = dataService.getTicketsForCallBack(currentTime,count);
+        List<Ticket> tikets = dataService.getTicketDataService().getTicketsForCallBack(currentTime,count);
 
         if (tikets.size()!= 0) {
             log.info(sessionId + " | Get callback job list");
             tikets.forEach(r -> log.debug(sessionId + " | " + r.toString()));
         }
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId,tikets), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId,tikets), "200 OK");
         return tikets;
     }
 
@@ -184,12 +184,12 @@ public class ApiTicketController {
         String logApiUrl = "/api/ticket/dialing";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        Ticket ticket = dataService.getOneTicketInDialingState();
+        Ticket ticket = dataService.getTicketDataService().getOneTicketInDialingState();
 
         if (ticket == null)
             throw new NotFoundException(sessionId, logMethod, logApiUrl, "Tickets in dialing state not found.");
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId,ticket), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId,ticket), "200 OK");
 
         return ticket;
     }
@@ -203,9 +203,9 @@ public class ApiTicketController {
 
         Timestamp currentTime =  new Timestamp(new Date().getTime());
 
-        Ticket uTicket = dataService.updateTicket(ticket,currentTime);
+        Ticket uTicket = dataService.getTicketDataService().updateTicket(ticket,currentTime);
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, utils.createJsonStr(sessionId, ticket), utils.createJsonStr(sessionId, uTicket),"200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, utils.createJsonStr(sessionId, ticket), utils.createJsonStr(sessionId, uTicket),"200 OK");
         return new RequestResult("Success","");
     }
 
@@ -216,13 +216,13 @@ public class ApiTicketController {
         String logApiUrl = "/api/ticket/cancel/" + id;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        Ticket ticket = dataService.cancelTicketById(id);
+        Ticket ticket = dataService.getTicketDataService().cancelTicketById(id);
 
         if (ticket == null)
             throw new NotFoundException(sessionId,logMethod, logApiUrl, "Ticket with id [" + id + "] not found");
 
         RequestResult result = new RequestResult("Success","Ticket with id ["+id+"] is canceled successfully.");
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId,result), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId,result), "200 OK");
 
         return result;
     }
@@ -236,18 +236,18 @@ public class ApiTicketController {
 
         Ticket ticket = null;
 
-        ticket = dataService.getTicketById(id);
+        ticket = dataService.getTicketDataService().getTicketById(id);
 
         if (ticket == null)
             throw new NotFoundException(sessionId,logMethod,logApiUrl,"Ticket with id [" + id + "] not found");
 
-        ticket = dataService.deleteTicketById(id);
+        ticket = dataService.getTicketDataService().deleteTicketById(id);
 
         if (ticket == null)
             throw new ForbiddenException(sessionId, logMethod, logApiUrl, "Forbidden delete ticket with id [" + id + "], bacause it is not in state 'Finished'. Cancel ticket before delete.");
 
         RequestResult result = new RequestResult("Success","Ticket with id ["+id+"] is deleted successfully.");
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId,result), "200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO, logMethod,logApiUrl, "",utils.createJsonStr(sessionId,result), "200 OK");
 
         return result;
     }
@@ -259,7 +259,7 @@ public class ApiTicketController {
         log.error(except.getSessionId()+ " | Error :" + except.getMessage());
 
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, except.getSessionId(), except.getMessage());
-        dataService.saveLog(except.getSessionId().toString(),LogLevel.ERROR, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "400 BAD REQUEST");
+        dataService.getLogService().saveLog(except.getSessionId().toString(),LogLevel.ERROR, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "400 BAD REQUEST");
         log.error(apiError.toString());
 
         return apiError;
@@ -272,7 +272,7 @@ public class ApiTicketController {
         log.error(except.getSessionId()+ " | Error :" + except.getMessage());
 
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, except.getSessionId(), except.getMessage());
-        dataService.saveLog(except.getSessionId().toString(),LogLevel.WARN, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "403 FORBIDDEN");
+        dataService.getLogService().saveLog(except.getSessionId().toString(),LogLevel.WARN, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "403 FORBIDDEN");
         log.error(apiError.toString());
 
         return apiError;
@@ -285,7 +285,7 @@ public class ApiTicketController {
         log.error(except.getSessionId()+ " | Error " + except.getMessage());
 
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, except.getSessionId(), except.getMessage());
-        dataService.saveLog(except.getSessionId().toString(),LogLevel.WARN, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "404 NOT FOUND");
+        dataService.getLogService().saveLog(except.getSessionId().toString(),LogLevel.WARN, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "404 NOT FOUND");
 
         log.error(apiError.toString());
 

@@ -19,14 +19,11 @@
                         <li><a href="account">Users</a></li>
                         <li><a href="test">Testing</a></li>
                         <li><a href="logs">Logs</a></li>
+                        <li><a href="logout">Logout</a></li>
                     </ul>
                     <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
                         <li sec:authorize="isAuthenticated()">
                             Hello, <span sec:authentication="name"></span>
-                        </li>
-
-                        <li>
-                            <a href="logout">Logout</a>
                         </li>
                     </ul>
                 </div>

@@ -92,7 +92,7 @@ public class ApiSettingsController {
             configFiles.add(new ConfigFile(f.getName(), utils.convertMilsToDate(f.lastModified())));
         });
 
-        dataService.saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,configFiles),"200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,configFiles),"200 OK");
         return configFiles;
     }
 
@@ -106,7 +106,7 @@ public class ApiSettingsController {
         //Добавляем список properties в БД
         Path fileStoragePath = fileStorageService.storeConfigFile(sessionId, file);
 
-        dataService.saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
         RequestResult result = new RequestResult("Success","Upload " + file.getOriginalFilename());
         return result;
     }
@@ -131,7 +131,7 @@ public class ApiSettingsController {
             e.printStackTrace();
         }
 
-        dataService.saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,resource),"200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,resource),"200 OK");
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("text/html"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
@@ -154,7 +154,7 @@ public class ApiSettingsController {
         } else
             throw new MyFileNotFoundException("File not found " + filename);
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
         return result;
     }
 

@@ -101,7 +101,7 @@ public class ApiPropertiesController {
         List<Property> propList = properties.getAllProperties();
         log.debug(properties.toString());
 
-        dataService.saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,propList),"200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,propList),"200 OK");
         return propList;
     }
 
@@ -118,7 +118,7 @@ public class ApiPropertiesController {
         if (property == null)
             throw new NotFoundException(sessionId, logMethod, logApiUrl, "Not found");
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "",utils.createJsonStr(sessionId,property),"200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "",utils.createJsonStr(sessionId,property),"200 OK");
         return property;
     }
 
@@ -139,7 +139,7 @@ public class ApiPropertiesController {
             throw new NotFoundException(sessionId, logMethod, logApiUrl, "Not found");
         }
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "",utils.createJsonStr(sessionId,property),"200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "",utils.createJsonStr(sessionId,property),"200 OK");
         return property;
     }
 
@@ -150,14 +150,14 @@ public class ApiPropertiesController {
         String logApiUrl = "/api/properties";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-        Property prop = dataService.addProperty(property);
+        Property prop = dataService.getPropertyDataService().addProperty(property);
 
         if (prop == null)
             throw new BadRequestException(sessionId, logMethod, logApiUrl, "Check log file for details.");
         else
             properties.addProperty(prop);
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,prop),utils.createJsonStr(sessionId,prop),"200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,prop),utils.createJsonStr(sessionId,prop),"200 OK");
         return prop;
     }
 
@@ -170,8 +170,8 @@ public class ApiPropertiesController {
 
         properties.updateProperty(property);
 
-        dataService.updateProperty(property);
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,property),utils.createJsonStr(sessionId,property),"200 OK");
+        dataService.getPropertyDataService().updateProperty(property);
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, utils.createJsonStr(sessionId,property),utils.createJsonStr(sessionId,property),"200 OK");
         return property;
     }
 
@@ -184,8 +184,8 @@ public class ApiPropertiesController {
 
         properties.deleteProperty(id);
 
-        dataService.deleteProperty(id);
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
+        dataService.getPropertyDataService().deleteProperty(id);
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
     }
 
     @PostMapping("/properties/upload")
@@ -197,12 +197,12 @@ public class ApiPropertiesController {
 
         //Добавляем список properties в БД
         Path fileStoragePath = fileStorageService.uploadFile(sessionId, file);
-        List<PropertyDAO> propertyDAOs = dataService.insertPropertyToDBv2(sessionId, fileStoragePath);
+        List<PropertyDAO> propertyDAOs = dataService.getPropertyDataService().insertPropertyToDBv2(sessionId, fileStoragePath);
 
         //Добавляем список properties в кэш-модель
         propertyDAOs.forEach(p->properties.addProperty(p.toProperty()));
 
-        dataService.saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
+        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
         RequestResult result = new RequestResult("Success","Upload "+propertyDAOs.size()+" records from property file ["+file.getOriginalFilename()+"]");
         return result;
     }
@@ -219,7 +219,7 @@ public class ApiPropertiesController {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + filename + "\"");
 
-        List<Property> list = dataService.findAllProperties();
+        List<Property> list = dataService.getPropertyDataService().findAllProperties();
 
         try (CSVPrinter csvPrinter = new CSVPrinter(response.getWriter(), CSVFormat.DEFAULT.withHeader(
                                                                                 PropertyFieldsEnum.NAME,
@@ -243,7 +243,7 @@ public class ApiPropertiesController {
         log.error(except.getSessionId()+ " | Error " + except.getMessage());
 
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, except.getSessionId(), except.getMessage());
-        dataService.saveLog(except.getSessionId().toString(),LogLevel.WARN,except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "404 NOT FOUND");
+        dataService.getLogService().saveLog(except.getSessionId().toString(),LogLevel.WARN,except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "404 NOT FOUND");
         log.error(apiError.toString());
 
         return apiError;
@@ -256,7 +256,7 @@ public class ApiPropertiesController {
         log.error(except.getSessionId()+ " | Error :" + except.getMessage());
 
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, except.getSessionId(), except.getMessage());
-        dataService.saveLog(except.getSessionId().toString(),LogLevel.ERROR, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "400 BAD REQUEST");
+        dataService.getLogService().saveLog(except.getSessionId().toString(),LogLevel.ERROR, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "400 BAD REQUEST");
         log.error(apiError.toString());
 
         return apiError;
