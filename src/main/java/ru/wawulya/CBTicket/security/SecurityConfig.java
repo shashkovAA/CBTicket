@@ -93,7 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatcher("/api/**")
                     .authorizeRequests()
                     .anyRequest()
-                    .hasRole("USER")
+                    .hasAnyRole("API","USER","ADMIN")
             .and()
                     .httpBasic()
                     .authenticationEntryPoint(authEntryPoint);
@@ -116,7 +116,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .authorizeRequests()
                     .antMatchers("/", "/css/**", "/js/**").permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest().hasAnyRole("USER","ADMIN")
             .and()
                     .formLogin()
                     .loginPage("/login")

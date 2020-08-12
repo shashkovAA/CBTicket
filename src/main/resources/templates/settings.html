@@ -13,10 +13,10 @@
                 <div class="container">
                     <ul id="nav-mobile" class="left hide-on-med-and-down">
                         <li><a href="home">Home</a></li>
-                        <li class="active"><a href="settings">Settings</a></li>
+                        <li sec:authorize="hasRole('ROLE_ADMIN')" class="active"><a href="settings">Settings</a></li>
                         <li><a href="database">Database</a></li>
-                        <li><a href="account">Users</a></li>
-                        <li><a href="test">Testing</a></li>
+                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
+                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
                         <li><a href="logs">Logs</a></li>
                         <li><a href="logout">Logout</a></li>
                     </ul>
@@ -30,12 +30,14 @@
         </nav>
 
         <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h4>
+                        Settings CBTicket application
+                    </h4>
+                </div>
+            </div>
 
-            <h4>
-                Settings CBTicket application
-            </h4>
-
-            <br/>
 
             <!--Секция списка загруженных конфиг файлов и форма загрузки-->
 

@@ -2,6 +2,8 @@ package ru.wawulya.CBTicket.modelCache;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.wawulya.CBTicket.model.User;
 
@@ -9,6 +11,9 @@ import java.util.*;
 
 @Component
 public class Users {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private Map<Long, User> users = new TreeMap<>();
 
@@ -28,9 +33,10 @@ public class Users {
 
         if (usr != null) {
             usr.setUsername(user.getUsername());
-            usr.setPassword(user.getPassword());
+            usr.setPassword(passwordEncoder.encode(user.getPassword()));
             usr.setFullname(user.getFullname());
             usr.setEnabled(user.isEnabled());
+            usr.setRoles(user.getRoles());
         }
     }
 

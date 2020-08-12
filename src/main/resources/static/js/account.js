@@ -3,15 +3,22 @@
 app.controller("UserController", function($scope, $http) {
 
     $scope.users = [];
+    $scope.roles = [];
+
     $scope.user = {
         id: 1,
         username: "",
         password: "",
         fullname: "",
+        roles: [],
         enabled: true
     };
+    $scope.role = {
+        name: "",
+        viewName : "",
+        authority: ""
+    };
 
-    // Now load the data from server
     refreshData();
 
     $scope.submitUser = function() {
@@ -69,11 +76,21 @@ app.controller("UserController", function($scope, $http) {
         $scope.user.id = user.id;
         $scope.user.username = user.username;
         $scope.user.password = user.password;
+        $scope.confirmPassword = user.password;
         $scope.user.fullname = user.fullname;
         $scope.user.enabled = user.enabled;
+        console.log("$scope.user: " + angular.toJson($scope.user));
+        console.log("user: " + angular.toJson(user));
 
-        $scope.confirmPassword = user.password;
-        console.log("user: " + $scope.user);
+        console.log(" $scope.roles[0]: " + angular.toJson($scope.roles[0]));
+        console.log(" $scope.roles[1]: " + angular.toJson($scope.roles[1]));
+        console.log("user: " + angular.toJson($scope.user));
+        $scope.user.roles[0] =  user.roles[0];
+        /*console.log(" $scope.user.roles[0]: " + angular.toJson($scope.user.roles[0]));
+        console.log(" $scope.roles[1]: " + angular.toJson($scope.roles[1]));*/
+        console.log("user: " + angular.toJson($scope.user));
+
+
 
     };
 
@@ -84,18 +101,32 @@ app.controller("UserController", function($scope, $http) {
         }).then(
             function(res) { // success
                 $scope.users = res.data;
+
             },
             function(res) { // error
                 console.log("Error: " + res.status + " : " + res.data);
             }
         );
+
+        $http({
+            method: 'GET',
+            url: 'api/roles'
+                }).then(
+                    function(res) { // success
+                        $scope.roles = res.data;
+                        //console.log("Roles: " + angular.toJson($scope.roles));
+
+                    },
+                    function(res) { // error
+                        console.log("Error: " + res.status + " : " + res.data);
+                    }
+                );
          $scope.showForm = false;
     }
 
     $scope.cancelForm2Btn = function() {
         $scope.form2 = false;
     };
-
 
     function _success(res) {
         refreshData();
@@ -118,4 +149,31 @@ app.controller("UserController", function($scope, $http) {
 
         $scope.confirmPassword = "";
     };
+
+     $scope.updateSelectedRole = function() {
+
+                console.log("Select: " + $scope.role_select);
+                //console.log("Select.name: " + $scope.role_select.name);
+                //console.log("Select: " +  angular.toJson($scope.role_select));
+
+                /*var method = "GET";
+                var url = "/api/compcode/fetch?sysname=" + $scope.form8_select;
+
+                $http({
+                    method: method,
+                    url: url,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(
+                    function(res) { // success
+                        form8_compcode = res.data;
+                        var jsonResp = angular.toJson(res.data);
+                        console.log("Response: " + jsonResp);
+                    },
+                    function(res) { // error
+                        console.log("Error: " + res.status + " : " + res.data);
+                    });
+*/
+     }
 });

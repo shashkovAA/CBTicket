@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class Role implements GrantedAuthority {
 
     private String name;
+    private String viewName;
 
     @Override
     public String getAuthority() {

@@ -1,6 +1,7 @@
 package ru.wawulya.CBTicket.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.omg.PortableInterceptor.USER_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.http.HttpStatus;
@@ -63,9 +64,7 @@ public class ApiUsersController {
         String logApiUrl = "/api/users";
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
 
-
-        user.addRole(new Role("ROLE_ADMIN"));
-
+        //user.addRole(new Role("ROLE_USER", "USER"));
         User usr = dataService.getUserService().addUser(user);
 
         if (usr == null)

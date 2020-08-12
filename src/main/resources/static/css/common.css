@@ -12,6 +12,9 @@ td.custom {
     padding: 1px;
 }
 
+th.tcentr {
+     text-align: center;
+}
 td.tcentr {
      text-align: center;
 }
@@ -82,5 +85,8 @@ row.no_m_b {
     margin-bottom: 0px;
 }*/
 
+.row {
+margin-bottom: 5px;
+}
 
 

@@ -43,7 +43,7 @@ public class TestController {
         model.addAttribute("apiCBTicketMethodList", apiMethodList.getListApiCBTicketMethodsInfo());
         model.addAttribute("compCodeList", apiCompletionCodeController.getAll());
 
-        return "test2";
+        return "test";
     }
 
     @GetMapping(value = "/ticket/job", produces = MediaType.APPLICATION_JSON_VALUE)

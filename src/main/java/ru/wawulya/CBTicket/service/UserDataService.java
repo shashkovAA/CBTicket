@@ -1,12 +1,10 @@
 package ru.wawulya.CBTicket.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CosNaming.BindingIterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.wawulya.CBTicket.data.JpaRoleRepository;
 import ru.wawulya.CBTicket.data.JpaUserRepository;
 import ru.wawulya.CBTicket.model.User;
 import ru.wawulya.CBTicket.modelCache.Users;
@@ -26,13 +24,13 @@ public class UserDataService {
     private PasswordEncoder passwordEncoder;
 
     private JpaUserRepository userRepo;
-    private JpaRoleRepository roleRepo;
+    private RoleDataService roleDataService;
     private Users users;
 
     @Autowired
-    public UserDataService(JpaUserRepository userRepo, JpaRoleRepository roleRepo, Users users) {
+    public UserDataService(JpaUserRepository userRepo, RoleDataService roleDataService, Users users) {
         this.userRepo = userRepo;
-        this.roleRepo = roleRepo;
+        this.roleDataService = roleDataService;
         this.users = users;
 
         initUsers();
@@ -84,7 +82,7 @@ public class UserDataService {
         defaultUser.setUsername("partner");
         defaultUser.setPassword("$2a$10$4Qk1ZhxOwlitmE63mljScOx9oKSY9jtMurwYdDV8aRNXV76sLrE2i");
         defaultUser.setEnabled(true);
-        defaultUser.setRoles(Collections.singleton(roleRepo.findByName("ROLE_USER").toRole()));
+        defaultUser.setRoles(Collections.singleton(roleDataService.findByName("ROLE_ADMIN").toRole()));
         return defaultUser;
     }
 
@@ -112,7 +110,7 @@ public class UserDataService {
     }
 
     private Set<RoleDAO> getRoleDAOs(User user) {
-        return user.getAuthorities().stream().map(r->roleRepo.findByName(r.getAuthority())).collect(Collectors.toSet());
+        return user.getAuthorities().stream().map(r->roleDataService.findByName(r.getAuthority())).collect(Collectors.toSet());
     }
 
     @Async

@@ -16,6 +16,9 @@ public class RoleDAO {
     private Long id;
     private String name;
 
+    @Column(name="viewname")
+    private String viewName;
+
     @Transient
     @ManyToMany(mappedBy = "roles")
     private Set<UserDAO> users;
@@ -25,9 +28,16 @@ public class RoleDAO {
         this.name = name;
     }
 
+    public RoleDAO(Long id, String name, String viewName) {
+        this.id = id;
+        this.name = name;
+        this.viewName = viewName;
+    }
+
     public Role toRole() {
         Role role = new Role();
         role.setName(this.name);
+        role.setViewName(this.viewName);
         return role;
     }
 
