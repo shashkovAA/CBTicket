@@ -36,8 +36,9 @@ public class RoleDAO {
 
     public Role toRole() {
         Role role = new Role();
-        role.setName(this.name);
-        role.setViewName(this.viewName);
+        role.setId(id);
+        role.setName(name);
+        role.setViewName(viewName);
         return role;
     }
 

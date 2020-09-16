@@ -10,46 +10,50 @@
 
         <nav>
             <div class="nav-wrapper">
-                <div class="container">
-                    <ul id="nav-mobile" class="left hide-on-med-and-down">
-                        <li><a href="home">Home</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
-                        <li><a href="database">Database</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
-                        <li class="active"><a href="logs">Logs</a></li>
-                        <li><a href="logout">Logout</a></li>
-                    </ul>
-                    <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
-                        <li sec:authorize="isAuthenticated()">
-                            Hello, <span sec:authentication="name"></span>
-                        </li>
-                    </ul>
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <ul id="nav-mobile" class="left hide-on-med-and-down">
+                            <li><a href="home">Home</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
+                            <li><a href="database">Database</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
+                            <li class="active"><a href="logs">Logs</a></li>
+                            <li><a href="logout">Logout</a></li>
+                        </ul>
+                        <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
+                            <li sec:authorize="isAuthenticated()">
+                                Hello, <span sec:authentication="name"></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
 
-        <div class="container">
-            <h4>
-                Logs management page
-            </h4>
+        <div class="row">
+            <div class="col s10 offset-s1">
+                <h4>
+                    Logs management page
+                </h4>
 
 
-            <table class="striped">
-                <tr>
-                    <th>Filename</th>
-                    <th>Size</th>
-                    <th>Modify</th>
-                </tr>
+                <table class="striped">
+                    <tr>
+                        <th>Filename</th>
+                        <th>Size</th>
+                        <th>Modify</th>
+                    </tr>
 
-                <tr ng-repeat="log in logs">
-                    <td> <a href="api/logs/download/{{log.filename}}">{{log.filename}}</a></td>
-                    <td >{{ log.filesize }}</td>
-                    <td >{{ log.lastModifyDate }}</td>
+                    <tr ng-repeat="log in logs">
+                        <td> <a href="api/logs/download/{{log.filename}}">{{log.filename}}</a></td>
+                        <td >{{ log.filesize }}</td>
+                        <td >{{ log.lastModifyDate }}</td>
 
-                </tr>
+                    </tr>
 
-            </table>
+                </table>
+            </div>
         </div>
 
         <br/>

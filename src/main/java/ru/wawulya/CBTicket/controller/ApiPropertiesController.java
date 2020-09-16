@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ru.wawulya.CBTicket.enums.LogLevel;
 import ru.wawulya.CBTicket.enums.PropertyFieldsEnum;
+import ru.wawulya.CBTicket.enums.PropertyNameEnum;
 import ru.wawulya.CBTicket.error.ApiError;
 import ru.wawulya.CBTicket.error.BadRequestException;
 import ru.wawulya.CBTicket.error.NotFoundException;
@@ -52,44 +53,6 @@ public class ApiPropertiesController {
         this.utils = utils;
     }
 
-/*   @GetMapping(value = "/properties", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Property> getAllProperties(@RequestParam ("page") int page,
-                                           @RequestParam ("size") int size,
-                                           @PageableDefault (sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageRequest
-                                            @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                                            @RequestParam(name = "pageSize",defaultValue = "10") Integer pageSize,
-                                            @RequestParam(name = "sortBy", defaultValue = "id") String sortBy
-                                            ) {
-
-        UUID sessionId = new Session().getUuid();
-        String logMethod ="GET";
-        String logApiUrl = "/api/properties";
-        log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
-
-        //log.info("pageNo : " + pageNo);
-        //log.info("pageSize : " + pageSize);
-        //log.info("param : " + param);
-
-        Pageable pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-
-
-        //log.info(String.valueOf("pageRequest.getPageNumber() : " + pageRequest.getPageNumber()));
-        //log.info(String.valueOf("pageRequest.getPageSize() : " + pageRequest.getPageSize()));
-
-        //Page<PropertyDAO> pageList = dataService.findAllProperties(pageRequest);
-
-        List<Property> propList = dataService.findAllProperties(pageRequest);
-
-        //propList.forEach(p->log.info(p.toString()));
-        pageList.getContent().forEach( p-> log.info(p.toString()));
-        log.info(String.valueOf("page.getTotalElements() : " + pageList.getTotalElements()));
-        log.info(String.valueOf("page.getTotalPages() : " + pageList.getTotalPages()));
-
-
-        dataService.saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,propList),"200 OK");
-        return propList;
-    }*/
-
     @GetMapping(value = "/properties", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Property> getAllProperties() {
         UUID sessionId = getSession().getUuid();
@@ -123,14 +86,11 @@ public class ApiPropertiesController {
     }
 
     @GetMapping(value = "/properties/find", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Property getPropertyByName(@RequestHeader Map<String, String> headers, @RequestParam(name = "name") String name) {
+    public Property getPropertyByName(@RequestParam(name = "name") String name) {
         UUID sessionId = getSession().getUuid();
         String logMethod ="GET";
         String logApiUrl = "/api/properties/find?name=" + name;
         log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
-        headers.forEach((key, value) -> {
-            log.info(String.format("Header '%s' = %s", key, value));
-        });
 
         //Property property = dataService.findPropertyByName(name);
         Property property = properties.getPropertyByName(name);
@@ -221,7 +181,11 @@ public class ApiPropertiesController {
 
         List<Property> list = dataService.getPropertyDataService().findAllProperties();
 
-        try (CSVPrinter csvPrinter = new CSVPrinter(response.getWriter(), CSVFormat.DEFAULT.withHeader(
+        String delimiterStr = properties.getPropertyByName(PropertyNameEnum.EXPORT_DATA_DELIMITER).getValue();
+        char delimiter = delimiterStr.replace("\"", "").replace("\'", "").charAt(0);
+
+        try (CSVPrinter csvPrinter = new CSVPrinter(response.getWriter(), CSVFormat.newFormat(delimiter).withRecordSeparator('\n').withHeader(
+                                                                                PropertyFieldsEnum.ID,
                                                                                 PropertyFieldsEnum.NAME,
                                                                                 PropertyFieldsEnum.VALUE,
                                                                                 PropertyFieldsEnum.DESCRIPTION,

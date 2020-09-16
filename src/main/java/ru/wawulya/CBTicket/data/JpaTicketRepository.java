@@ -1,18 +1,23 @@
 package ru.wawulya.CBTicket.data;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.wawulya.CBTicket.model.Ticket;
+import ru.wawulya.CBTicket.modelDAO.AttemptDAO;
 import ru.wawulya.CBTicket.modelDAO.TicketDAO;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-public interface JpaTicketRepository extends JpaRepository<TicketDAO, Long> {
+public interface JpaTicketRepository extends JpaRepository<TicketDAO, Long>, JpaSpecificationExecutor {
 
     @Query(value = "select t.* from ticket t inner join completion_code c on t.last_completion_code_id = c.id  where t.finished = 0 and c.recall = 1 and cb_date < :timestamp order by cb_date",
             nativeQuery = true)
@@ -39,5 +44,9 @@ public interface JpaTicketRepository extends JpaRepository<TicketDAO, Long> {
     @Query(value = "select * from ticket t where  t.cb_number = :cbNumber order by cb_date",
             nativeQuery = true)
     List<TicketDAO> findAllByCbNumber(String cbNumber);
+
+    Page<TicketDAO> findAll(Pageable pageable);
+    Page<TicketDAO> findAll(Specification specification, Pageable pageable);
+    List<TicketDAO> findAll(Specification specification);
 
 }

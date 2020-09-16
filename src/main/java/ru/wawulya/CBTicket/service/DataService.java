@@ -39,6 +39,8 @@ public class DataService {
     private CompCodeDataService compCodeDataService;
     private PropertyDataService propertyDataService;
     private TicketDataService ticketDataService;
+    private AttemptDataService attemptDataService;
+    private TicketParamsDataService ticketParamsDataService;
 
     @Autowired
     public DataService(
@@ -48,7 +50,9 @@ public class DataService {
                        PropertyDataService propertyDataService,
                        UserDataService userService,
                        RoleDataService roleService,
-                       LogDataService logService) {
+                       LogDataService logService,
+                       AttemptDataService attemptDataService,
+                       TicketParamsDataService ticketParamsDataService) {
 
 
         this.ticketDataService = ticketDataService;
@@ -57,7 +61,8 @@ public class DataService {
         this.userService = userService;
         this.roleService= roleService;
         this.logService = logService;
-
+        this.attemptDataService = attemptDataService;
+        this.ticketParamsDataService = ticketParamsDataService;
     }
 
 }

@@ -10,203 +10,207 @@
 
         <nav>
             <div class="nav-wrapper">
-                <div class="container">
-                    <ul id="nav-mobile" class="left hide-on-med-and-down">
-                        <li><a href="home">Home</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')" class="active"><a href="settings">Settings</a></li>
-                        <li><a href="database">Database</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
-                        <li><a href="logs">Logs</a></li>
-                        <li><a href="logout">Logout</a></li>
-                    </ul>
-                    <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
-                        <li sec:authorize="isAuthenticated()">
-                            Hello, <span sec:authentication="name"></span>
-                        </li>
-                    </ul>
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <ul id="nav-mobile" class="left hide-on-med-and-down">
+                            <li><a href="home">Home</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')" class="active"><a href="settings">Settings</a></li>
+                            <li><a href="database">Database</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
+                            <li><a href="logs">Logs</a></li>
+                            <li><a href="logout">Logout</a></li>
+                        </ul>
+                        <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
+                            <li sec:authorize="isAuthenticated()">
+                                Hello, <span sec:authentication="name"></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
 
-        <div class="container">
-            <div class="row">
-                <div class="col s12">
-                    <h4>
-                        Settings CBTicket application
-                    </h4>
-                </div>
-            </div>
-
-
-            <!--Секция списка загруженных конфиг файлов и форма загрузки-->
-
-            <div class="row">
-
-                <div class="col s12 m8 l5">
-
-                    <h5>Configuration files:</h5>
-
-                    <table>
-                        <tr>
-                            <th>Name</th>
-                            <th>Modify date</th>
-                        </tr>
-                        <tr ng-repeat="file in files">
-                            <td> <a class="hlink" href="api/settings/download/{{file.filename}}">{{file.filename}}</a></td>
-                            <td >{{ file.lastModifyDate }}</td>
-                            <td>
-                                <a title="Delete" ng-confirm-click="Are you sure to delete file [{{file.filename}}] " confirmed-click="form1_deleteFile(file)">
-                                    <img class="scale" th:src="@{/images/delete1.png}" width="25" height="25" />
-                                </a>
-                            </td>
-
-                        </tr>
-                    </table>
+        <div class="row">
+            <div class="col s10 offset-s1">
+                <div class="row">
+                    <div class="col s12">
+                        <h4>
+                            Settings CBTicket application
+                        </h4>
+                    </div>
                 </div>
 
-                <div class="col s4 m3 l3 offset-l1">
 
-                    <h5>Upload config file :</h5>
+                <!--Секция списка загруженных конфиг файлов и форма загрузки-->
 
-                    <form action="#" ng-submit="form1_importFile()">
+                <div class="row">
 
-                            <div class="row">
-                                <div class="file-field input-field ">
+                    <div class="col s12 m8 l5">
 
-                                    <input type="file" file-model="settingsFile">
+                        <h5>Configuration files:</h5>
 
-                                    <div class="file-path-wrapper">
-                                        <input class="file-path validate" type="text" placeholder="Upload file">
+                        <table>
+                            <tr>
+                                <th>Name</th>
+                                <th>Modify date</th>
+                            </tr>
+                            <tr ng-repeat="file in files">
+                                <td> <a class="hlink" href="api/settings/download/{{file.filename}}">{{file.filename}}</a></td>
+                                <td >{{ file.lastModifyDate }}</td>
+                                <td>
+                                    <a title="Delete" ng-confirm-click="Are you sure to delete file [{{file.filename}}] " confirmed-click="form1_deleteFile(file)">
+                                        <img class="scale" th:src="@{/images/delete1.png}" width="25" height="25" />
+                                    </a>
+                                </td>
+
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col s4 m3 l3 offset-l1">
+
+                        <h5>Upload config file :</h5>
+
+                        <form action="#" ng-submit="form1_importFile()">
+
+                                <div class="row">
+                                    <div class="file-field input-field ">
+
+                                        <input type="file" file-model="settingsFile">
+
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text" placeholder="Upload file">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col">
+                                        <input class="standard" type="submit" value="Import" />
                                     </div>
 
                                 </div>
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col">
-                                    <input class="standard" type="submit" value="Import" />
-                                </div>
-
-                            </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-
-            <div class="row"/>
-
-
-            <div class="row">
-                <div class="col s12">
-                    <h5>
-                        Properties CBTicket application
-                    </h5>
-                </div>
-            </div>
-
-            <div class="row" ng-show="!showForm">
-                <div class="col s12">
-
-                    <span class="right hlink">
-                        <a href="/api/properties/export">Export properties.csv</a>
-                    </span>
-
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col s12">
-
-                    <div ng-show="showForm">
-
-                        <form ng-submit="form2_submitBtn()" >
-                            
-                            <div class="row">
-
-                                <div class="col s12 m4 l4 xl3">
-                                    <div class="row">
-                                        <div class="col s12">
-                                            <h6>Edit property :</h6>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col s12">
-                                            <input class="standard" type="submit" value="Save"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col s12">
-                                            <input class="standard" type="button" value="Cancel" ng-click="form2_cancelBtn()" />
-                                        </div>
-                                    </div>
-
-                                </div>
-                                
-                                <div class="col s12 m8 l8 xl9">
-                                    <div class="row">
-                                        <div class="input-field ">
-                                            <input placeholder="" id="name" type="text" class="validate" ng-model="property.name" required>
-                                            <label for="name">Name* :</label>
-                                        </div>
-
-                                            <div class="input-field ">
-                                                <input placeholder="" id="value" type="text" class="validate" ng-model="property.value" required>
-                                                <label for="value">Value* :</label>
-                                            </div>
-
-
-                                            <div class="input-field">
-                                                <input placeholder="" id="description" type="text" class="validate" ng-model="property.description" required>
-                                                <label for="description">Description :</label>
-                                            </div>
-                                    </div>
-                                </div>
-                            </div>
                         </form>
 
                     </div>
 
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col s12">
 
-                    <table class="striped">
-                        <tr>
-                            <th>Name</th>
-                            <th>Value</th>
-                            <th>Description</th>
+                <div class="row"/>
 
-                        </tr>
-                        <tr ng-repeat="property in properties">
-                            <td> {{ property.name }}</td>
-                            <td >{{ property.value }}</td>
-                            <td >{{ property.description }}</td>
-                            <td>
-                                <a title="Edit" ng-click="form2_editProperty(property)" ng-class="{'disable': ( !{{ property.editable }} || showForm ) }">
-                                    <img class="scale" th:src="@{/images/edit2.png}" width="25" height="25" />
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
+
+                <div class="row">
+                    <div class="col s12">
+                        <h5>
+                            Properties CBTicket application
+                        </h5>
+                    </div>
                 </div>
 
-            </div>
+                <!--<div class="row" ng-show="!showForm">
+                    <div class="col s12">
+
+                        <span class="right hlink">
+                            <a href="/api/properties/export">Export properties.csv</a>
+                        </span>
+
+                    </div>
+                </div>-->
+
+                <div class="row">
+                    <div class="col s12">
+
+                        <div ng-show="showForm">
+
+                            <form ng-submit="form2_submitBtn()" >
+
+                                <div class="row">
+
+                                    <div class="col s12 m4 l4 xl3">
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <h6>Edit property :</h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <input class="standard" type="submit" value="Save"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <input class="standard" type="button" value="Cancel" ng-click="form2_cancelBtn()" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col s12 m8 l8 xl9">
+                                        <div class="row">
+                                            <div class="input-field ">
+                                                <input placeholder="" id="name" type="text" class="validate" ng-model="property.name" required>
+                                                <label for="name">Name* :</label>
+                                            </div>
+
+                                                <div class="input-field ">
+                                                    <input placeholder="" id="value" type="text" class="validate" ng-model="property.value" required>
+                                                    <label for="value">Value* :</label>
+                                                </div>
 
 
-            </div>
+                                                <div class="input-field">
+                                                    <input placeholder="" id="description" type="text" class="validate" ng-model="property.description" required>
+                                                    <label for="description">Description :</label>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
 
-            <div class="row">
-                <div class="col s6">
-                    <h5>Restart application</h5>
-                    <br>
-                    <input class="standard" type="button"  ng-confirm-click="Are you sure to restart application?" confirmed-click="restartApp()" value="Restart" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12">
+
+                        <table class="striped">
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Description</th>
+
+                            </tr>
+                            <tr ng-repeat="property in properties">
+                                <td> {{ property.name }}</td>
+                                <td >{{ property.value }}</td>
+                                <td >{{ property.description }}</td>
+                                <td>
+                                    <a title="Edit" ng-click="form2_editProperty(property)" ng-class="{'disable': ( !{{ property.editable }} || showForm ) }">
+                                        <img class="scale" th:src="@{/images/edit2.png}" width="25" height="25" />
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col s6">
+                        <h5>Restart application</h5>
+                        <br>
+                        <input class="standard" type="button"  ng-confirm-click="Are you sure to restart application?" confirmed-click="restartApp()" value="Restart" />
+                    </div>
                 </div>
             </div>
 

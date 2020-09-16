@@ -1,0 +1,495 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>CBTicket Logs</title>
+    <link   th:href="@{/css/common.css}" rel="stylesheet" />
+    <link   th:href="@{/css/cust.css}" rel="stylesheet" />
+    <link   th:href="@{/css/materialize.min.css}" rel="stylesheet" media="screen,projection"/>
+    <link   th:href="@{/css/ui-grid.min.css}" rel="stylesheet" media="screen,projection"/>
+    <!--<link rel="stylesheet" href="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.css">-->
+
+
+    <head>
+    <body class="grey lighten-5" ng-app="DataBaseModule" ng-controller="DataController">
+
+        <nav>
+            <div class="nav-wrapper">
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <ul id="nav-mobile" class="left hide-on-med-and-down">
+                            <li><a href="home">Home</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
+                            <li class="active"><a href="data2">Database</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
+                            <li><a href="logs">Logs</a></li>
+                            <li><a href="logout">Logout</a></li>
+                        </ul>
+                        <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
+                            <li sec:authorize="isAuthenticated()">
+                                Hello, <span sec:authentication="name"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="row">
+
+            <div class="col s1 offset-s1">
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row">
+                         <span class="hlink">
+                            Tables:
+                         </span>
+                    </div>
+                    <div class="row"></div>
+
+                    <div class="row">
+                         <span class="hlink">
+                            <a href="#" ng-click="switch('apilog')">apilog</a>
+                         </span>
+                    </div>
+                    <div class="row">
+                        <span class="hlink">
+                            <a href="#" ng-click="switch('attempt')">attempt</a>
+                        </span>
+                    </div>
+                    <div class="row">
+                         <span class="hlink">
+                            <a href="#" ng-click="switch('completion_code')">completion_code</a>
+                         </span>
+                    </div>
+                    <div class="row">
+                         <span class="hlink">
+                            <a href="#" ng-click="switch('message')">message</a>
+                         </span>
+                    </div>
+                    <div class="row">
+                        <span class="hlink">
+                            <a href="#" ng-click="switch('property')">property</a>
+                        </span>
+                    </div>
+                    <div class="row">
+                            <span class="hlink">
+                                <a href="#" ng-click="switch('roles')">roles</a>
+                            </span>
+                    </div>
+                    <div class="row">
+                        <span class="hlink">
+                            <a href="#" ng-click="switch('ticket')">ticket</a>
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="hlink">
+                            <a href="#" ng-click="switch('ticket_params')">ticket_params</a>
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="hlink">
+                            <a href="#" ng-click="switch('url')">url</a>
+                        </span>
+                    </div>
+                    <div class="row">
+                            <span class="hlink">
+                                <a href="#" ng-click="switch('users')">users</a>
+                            </span>
+                    </div>
+
+                </div>
+
+            <div class="col s9">
+
+                <div class="row" ng-show = "apilog">
+
+                    <div class="col s12">
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>ApiLog table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="username">Username</label>
+                                <input placeholder="" name="username" id="username" type="text" ng-model="apiLogFilter.username">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="sDate">Start date</label>
+                                <input placeholder="" name="sDate" id="sDate" type="text" class="datepicker" ng-model="apiLogFilter.startDate">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="sTime">Start time</label>
+                                <input placeholder="00:00" name="sTime" id="sTime" type="text" class="timepicker" ng-model="apiLogFilter.startTime">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="endDate">End date</label>
+                                <input placeholder="" name="endDate" id="endDate" type="text" class="datepicker" ng-model="apiLogFilter.endDate">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="endTime">End time</label>
+                                <input placeholder="00:00" name="endTime" id="endTime" type="text" class="timepicker" ng-model="apiLogFilter.endTime">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="level">Level</label>
+                                <input placeholder="" name="level" id="level" type="text" ng-model="apiLogFilter.level">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="method">Method</label>
+                                <input placeholder="" name="method" id="method" type="text" ng-model="apiLogFilter.method">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="apiUrl">ApiURL</label>
+                                <input placeholder="" name="apiUrl" id="apiUrl" type="text" ng-model="apiLogFilter.apiUrl">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="host">Host</label>
+                                <input placeholder="" name="host" id="host" type="text" ng-model="apiLogFilter.host">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="sessionId">Session ID</label>
+                                <input placeholder="" name="sessionId" id="sessionId" type="text" ng-model="apiLogFilter.sessionId">
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="standard" type="button" value="Search" ng-click="apilog_search()" />
+                                <input class="standard" type="button" value="Clear" ng-click="apilog_clear()" />
+                                <input class="standard" type="button" value="Export" ng-click="apilog_export()" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="apilog_gridOptions" class="myGrid" ui-grid-pagination></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row" ng-show = "attempt">
+                    <div class="col s12">
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Attempt table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="ticketId">TicketId</label>
+                                <input placeholder="" name="ticketId" id="ticketId" type="text" ng-model="attemptFilter.ticketId">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="at_sDate">Start date</label>
+                                <input placeholder="" name="at_sDate" id="at_sDate" type="text" class="datepicker" ng-model="attemptFilter.startDate">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="at_sTime">Start time</label>
+                                <input placeholder="00:00" name="at_sTime" id="at_sTime" type="text" class="timepicker" ng-model="attemptFilter.startTime">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="at_endDate">End date</label>
+                                <input placeholder="" name="at_endDate" id="at_endDate" type="text" class="datepicker" ng-model="attemptFilter.endDate">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="at_endTime">End time</label>
+                                <input placeholder="00:00" name="at_endTime" id="at_endTime" type="text" class="timepicker" ng-model="attemptFilter.endTime">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="callId">CallId</label>
+                                <input placeholder="" name="callId" id="callId" type="text" ng-model="attemptFilter.callId">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="operatorNumber">Operator Number</label>
+                                <input placeholder="" name="operatorNumber" id="operatorNumber" type="text" ng-model="attemptFilter.operatorNumber">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="phantomNumber">Phantom Number</label>
+                                <input placeholder="" name="phantomNumber" id="phantomNumber" type="text" ng-model="attemptFilter.phantomNumber">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="compCode">CompCodeId</label>
+                                <input placeholder="" name="compCode" id="compCode" type="text" ng-model="attemptFilter.compCode">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="ucid">Ucid</label>
+                                <input placeholder="" name="ucid" id="ucid" type="text" ng-model="attemptFilter.ucid">
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="standard" type="button" value="Search" ng-click="attempt_search()" />
+                                <input class="standard" type="button" value="Clear" ng-click="attempt_clear()" />
+                                <input class="standard" type="button" value="Export" ng-click="attempt_export()" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="attempt_gridOptions" class="myGrid" ui-grid-pagination></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-show = "completion_code">
+
+                    <div class="col s12">
+
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Completion_code table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="standard" type="button" value="Export" ng-click="compCode_export()" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="compCode_gridOptions" class="myGrid"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row" ng-show = "message">
+
+                    <h5>Message table:</h5>
+
+                </div>
+
+                <div class="row" ng-show = "property">
+
+                    <div class="col s12">
+
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Property table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="standard" type="button" value="Export" ng-click="property_export()" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="property_gridOptions" class="myGrid"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row" ng-show = "roles">
+
+                    <div class="col s12">
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Roles table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="role_gridOptions" class="myGrid_small"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row" ng-show = "ticket">
+
+                    <div class="col s12">
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Ticket table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="id">Id</label>
+                                <input placeholder="" name="id" id="id" type="text" ng-model="ticketFilter.id">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="cbNumber">Callback Number</label>
+                                <input placeholder="" name="cbNumber" id="cbNumber" type="text" ng-model="ticketFilter.cbNumber">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="t_sDate">Start Date</label>
+                                <input placeholder="" name="t_sDate" id="t_sDate" type="text" class="datepicker" ng-model="ticketFilter.startDate">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="t_sTime">Start Time</label>
+                                <input placeholder="00:00" name="t_sTime" id="t_sTime" type="text" class="timepicker" ng-model="ticketFilter.startTime">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="t_endDate">End Date</label>
+                                <input placeholder="" name="t_endDate" id="t_endDate" type="text" class="datepicker" ng-model="ticketFilter.endDate">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="t_endTime">End Time</label>
+                                <input placeholder="00:00" name="t_endTime" id="t_endTime" type="text" class="timepicker" ng-model="ticketFilter.endTime">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="attemptCount">Attempts Count</label>
+                                <input placeholder="" name="attemptCount" id="attemptCount" type="text" ng-model="ticketFilter.attemptCount">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="compCodeName">CompletionCode Name</label>
+                                <input placeholder="" name="compCodeName" id="compCodeName" type="text" ng-model="ticketFilter.compCodeName">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <select class="sel_custom" ng-model="ticketFilter.finished">
+                                    <option value=""></option>
+                                    <option value="true">true</option>
+                                    <option value="false">false</option>
+                                </select>
+                                <label>Finished</label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="standard" type="button" value="Search" ng-click="ticket_search()" />
+                                <input class="standard" type="button" value="Clear" ng-click="ticket_clear()" />
+                                <input class="standard" type="button" value="Export" ng-click="ticket_export()" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="ticket_gridOptions" class="myGrid" ui-grid-pagination></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row" ng-show = "ticket_params">
+
+                    <div class="col s12">
+
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>TicketParams table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="p_ticketId">Ticket Id</label>
+                                <input placeholder="" name="p_ticketId" id="p_ticketId" type="text" ng-model="ticketParamsFilter.ticketId">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="cbMaxAttempts">Max Attempts</label>
+                                <input placeholder="" name="cbMaxAttempts" id="cbMaxAttempts" type="text" ng-model="ticketParamsFilter.cbMaxAttempts">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="cbAttemptsTimeout">Attempts Timeout</label>
+                                <input placeholder="" name="cbAttemptsTimeout" id="cbAttemptsTimeout" type="text" ng-model="ticketParamsFilter.cbAttemptsTimeout">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="cbSource">Callback Source</label>
+                                <input placeholder="" name="cbSource" id="cbSource" type="text" ng-model="ticketParamsFilter.cbSource">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="cbType">Callback Type</label>
+                                <input placeholder="" name="cbType" id="cbType" type="text"  ng-model="ticketParamsFilter.cbType">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="cbOriginator">Callback Originator</label>
+                                <input placeholder="" name="cbOriginator" id="cbOriginator" type="text"  ng-model="ticketParamsFilter.cbOriginator">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="cbUrl">Callback URL</label>
+                                <input placeholder="" name="cbUrl" id="cbUrl" type="text" ng-model="ticketParamsFilter.cbUrl">
+                            </div>
+                            <div class="input-field col s6 m3 l2 xl2">
+                                <label for="ucidOld">Ucid Old</label>
+                                <input placeholder="" name="ucidOld" id="ucidOld" type="text" ng-model="ticketParamsFilter.ucidOld">
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="standard" type="button" value="Search" ng-click="ticketParams_search()" />
+                                <input class="standard" type="button" value="Clear" ng-click="ticketParams_clear()" />
+                                <input class="standard" type="button" value="Export" ng-click="ticketParams_export()" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="ticketParams_gridOptions" class="myGrid" ui-grid-pagination></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="row" ng-show = "url">
+
+                    <h5>Url table:</h5>
+
+                </div>
+
+                <div class="row" ng-show = "users">
+
+                    <div class="col s12">
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Users table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="user_gridOptions" class="myGrid"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
+
+    <script th:src="@{angular.js}"></script>
+    <script th:src="@{js/materialize.min.js}"></script>
+    <script th:src="@{js/ui-grid.min.js}"></script>
+    <!--<script src="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.js"></script>-->
+    <script th:src="@{/js/database.js}"></script>
+    <script th:src="@{/js/dataObj.js}"></script>
+</html>

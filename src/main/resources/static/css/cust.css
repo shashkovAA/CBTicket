@@ -1,0 +1,29 @@
+th, td {
+    font-size: 12px;
+  }
+table {
+  width: 100%;
+ /* table-layout: fixed;*/
+}
+
+/*
+th, td {
+  overflow: hidden;
+  width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}*/
+
+.myGrid{
+font-size: 12px;
+width: 1200px;
+height: 600px;
+}
+
+.myGrid_small{
+font-size: 12px;
+width: 400px;
+height: 500px;
+}
+
+

@@ -11,29 +11,51 @@
 <body>
         <nav>
             <div class="nav-wrapper">
-                <div class="container">
-                    <ul id="nav-mobile" class="left hide-on-med-and-down">
-                        <li class="active"><a href="home">Home</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
-                        <li><a href="database">Database</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
-                        <li><a href="logs">Logs</a></li>
-                        <li><a href="logout">Logout</a></li>
-                    </ul>
-                    <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
-                        <li sec:authorize="isAuthenticated()">
-                            Hello, <span sec:authentication="name"></span>
-                        </li>
-                    </ul>
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <ul id="nav-mobile" class="left hide-on-med-and-down">
+                            <li class="active"><a href="home">Home</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
+                            <li><a href="database">Database</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
+                            <li><a href="logs">Logs</a></li>
+                            <li><a href="logout">Logout</a></li>
+                        </ul>
+                        <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
+                            <li sec:authorize="isAuthenticated()">
+                                Hello, <span sec:authentication="name"></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
 
-        <div class="container">
-            <h4>Application CBTicket home page</h4>
-            <br/>
-            <h5>Property API methods :</h5>
+        <div class="row">
+            <div class="col s10 offset-s1">
+                <h4>Application CBTicket home page</h4>
+                <br/>
+                <h5>Property API methods :</h5>
+                    <table border="1">
+                        <tr>
+                            <th>Method</th>
+                            <th>Url</th>
+                            <th>RequestBody</th>
+                            <th>ResponseBody</th>
+                            <th>Description</th>
+                        </tr>
+
+                        <tr th:each="apiMethod : ${apiPropertyMethodList}">
+                            <td th:text="${apiMethod.method}">method</td>
+                            <td th:text="${apiMethod.url}">url</td>
+                            <td th:text="${apiMethod.requestBody}">requestBody</td>
+                            <td th:text="${apiMethod.responseBody}">responseBody</td>
+                            <td th:text="${apiMethod.description}">description</td>
+                        </tr>
+                    </table>
+                <br/>
+                <h5>CBTicket API methods :</h5>
                 <table border="1">
                     <tr>
                         <th>Method</th>
@@ -43,7 +65,7 @@
                         <th>Description</th>
                     </tr>
 
-                    <tr th:each="apiMethod : ${apiPropertyMethodList}">
+                    <tr th:each="apiMethod : ${apiCBTicketMethodList}">
                         <td th:text="${apiMethod.method}">method</td>
                         <td th:text="${apiMethod.url}">url</td>
                         <td th:text="${apiMethod.requestBody}">requestBody</td>
@@ -51,26 +73,8 @@
                         <td th:text="${apiMethod.description}">description</td>
                     </tr>
                 </table>
-            <br/>
-            <h5>CBTicket API methods :</h5>
-            <table border="1">
-                <tr>
-                    <th>Method</th>
-                    <th>Url</th>
-                    <th>RequestBody</th>
-                    <th>ResponseBody</th>
-                    <th>Description</th>
-                </tr>
-
-                <tr th:each="apiMethod : ${apiCBTicketMethodList}">
-                    <td th:text="${apiMethod.method}">method</td>
-                    <td th:text="${apiMethod.url}">url</td>
-                    <td th:text="${apiMethod.requestBody}">requestBody</td>
-                    <td th:text="${apiMethod.responseBody}">responseBody</td>
-                    <td th:text="${apiMethod.description}">description</td>
-                </tr>
-            </table>
-        </div>>
+            </div>
+        </div>
 </body>
 
 </html>

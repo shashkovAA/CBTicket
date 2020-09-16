@@ -13,22 +13,13 @@ import java.sql.Timestamp;
 public class Attempt {
 
     private Long id;
+    private Long ticketId;
     private String ucid;
     private String callId;
     private Timestamp attemptStart;
     private Timestamp attemptStop;
     private String phantomNumber;
     private String operatorNumber;
-    private CompletionCode completionCode;
-
-    public Attempt(AttemptDAO attemptDAO) {
-        id = attemptDAO.getId();
-        ucid = attemptDAO.getUcid();
-        callId =attemptDAO.getCallid();
-        attemptStart = attemptDAO.getAttempt_start();
-        attemptStop = attemptDAO.getAttempt_stop();
-        completionCode = new CompletionCode(attemptDAO.getCompletionCodeDAO());
-
-    }
+    private Long completionCodeId;
 
 }

@@ -24,11 +24,19 @@ public class AttemptDAO {
     private TicketDAO ticketDAO;
 
     private String ucid;
-    private String callid;
-    private Timestamp attempt_start;
-    private Timestamp attempt_stop;
-    private String phantom_number;
-    private String operator_number;
+    private String callId;
+
+    @Column(name="attempt_start")
+    private Timestamp attemptStart;
+
+    @Column(name="attempt_stop")
+    private Timestamp attemptStop;
+
+    @Column(name="phantom_number")
+    private String phantomNumber;
+
+    @Column(name="operator_number")
+    private String operatorNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="completion_code_id", nullable = false)
@@ -38,16 +46,31 @@ public class AttemptDAO {
 
         this.ticketDAO = ticketDAO;
         this.completionCodeDAO = completionCodeDAO;
-        this.attempt_start = new Timestamp(new Date().getTime());
+        this.attemptStart = new Timestamp(new Date().getTime());
     }
 
     public void update (Attempt attempt) {
         ucid = attempt.getUcid();
-        callid = attempt.getCallId();
-        phantom_number = attempt.getPhantomNumber();
-        operator_number = attempt.getOperatorNumber();
-        attempt_start = attempt.getAttemptStart();
-        attempt_stop = attempt.getAttemptStop();
+        callId = attempt.getCallId();
+        phantomNumber = attempt.getPhantomNumber();
+        operatorNumber = attempt.getOperatorNumber();
+        attemptStart = attempt.getAttemptStart();
+        attemptStop = attempt.getAttemptStop();
+    }
+
+    public Attempt toAttempt() {
+        Attempt attempt = new Attempt();
+        attempt.setId(id);
+        attempt.setTicketId(ticketDAO.getId());
+        attempt.setAttemptStart(attemptStart);
+        attempt.setAttemptStop(attemptStop);
+        attempt.setUcid(ucid);
+        attempt.setCallId(callId);
+        attempt.setPhantomNumber(phantomNumber);
+        attempt.setOperatorNumber(operatorNumber);
+        attempt.setCompletionCodeId(completionCodeDAO.getId());
+
+        return attempt;
     }
 
 }

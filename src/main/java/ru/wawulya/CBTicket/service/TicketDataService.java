@@ -2,6 +2,9 @@ package ru.wawulya.CBTicket.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.wawulya.CBTicket.data.JpaTicketRepository;
 import ru.wawulya.CBTicket.enums.CompCodeSysnameEnum;
@@ -115,7 +118,7 @@ public class TicketDataService {
 
         AttemptDAO attemptDAO = ticketDAO.getAttemptDAOs().get(lastAttemptIndex);
         attemptDAO.update(lastAttempt);
-        attemptDAO.setAttempt_stop(currentTime);
+        attemptDAO.setAttemptStop(currentTime);
         attemptDAO.setCompletionCodeDAO(lastComplCodeDAO);
 
         ticketRepo.save(ticketDAO);
@@ -185,5 +188,20 @@ public class TicketDataService {
         List<Ticket> tickets = uncompleteTickets.stream().filter(t->!t.isFinished()).map(t->new Ticket(t)).collect(Collectors.toList());
 
         return tickets;
+    }
+
+    public List<Ticket> findAll(Specification specification){
+
+        return ticketRepo.findAll(specification).stream().map(TicketDAO::toTicket).collect(Collectors.toList());
+    }
+
+    public Page<Ticket> findAll(Pageable pageable){
+
+        return ticketRepo.findAll(pageable).map(TicketDAO::toTicket);
+    }
+
+    public Page<Ticket> findAll(Specification specification, Pageable pageable){
+
+        return ticketRepo.findAll(specification, pageable).map(TicketDAO::toTicket);
     }
 }

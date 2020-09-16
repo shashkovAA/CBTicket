@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 @AllArgsConstructor
 public class Role implements GrantedAuthority {
 
+    private Long id;
     private String name;
     private String viewName;
 

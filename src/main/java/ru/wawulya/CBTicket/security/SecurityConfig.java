@@ -91,13 +91,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             http
                     .antMatcher("/api/**")
+                    .antMatcher("/test/**")
                     .authorizeRequests()
                     .anyRequest()
                     .hasAnyRole("API","USER","ADMIN")
             .and()
                     .httpBasic()
                     .authenticationEntryPoint(authEntryPoint);
-
         }
     }
 

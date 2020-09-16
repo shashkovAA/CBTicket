@@ -9,5 +9,6 @@ public class PropertyNameEnum {
     public static final String PHANTOM_NUMBER_POOL = "PhantomNumberPool";
     public static final String DEFAULT_ORIGINATOR = "DefaultOriginator";
     public static final String DEFAULT_MESSAGE = "DefaultMessage";
+    public static final String EXPORT_DATA_DELIMITER = "ExportDataDelimiter";
 
 }

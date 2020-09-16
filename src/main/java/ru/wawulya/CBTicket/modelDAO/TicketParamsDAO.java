@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.wawulya.CBTicket.model.Ticket;
+import ru.wawulya.CBTicket.model.TicketParams;
 
 import javax.persistence.*;
 
@@ -47,4 +48,21 @@ public class TicketParamsDAO {
         this.cbMaxAttempts = cbMaxAttempts;
         this.cbAttemptsTimeout = cbAttemptsTimeout;
     }
+
+    public TicketParams toTicketParams() {
+        TicketParams ticketParams = new TicketParams();
+
+        ticketParams.setId(id);
+        ticketParams.setTicketId(ticketDAO.getId());
+        ticketParams.setCbUrl(cbUrl);
+        ticketParams.setUcidOld(ucidOld);
+        ticketParams.setCbType(cbType);
+        ticketParams.setCbSource(cbSource);
+        ticketParams.setCbOriginator(cbOriginator);
+        ticketParams.setCbMaxAttempts(cbMaxAttempts);
+        ticketParams.setCbAttemptsTimeout(cbAttemptsTimeout);
+
+        return ticketParams;
+    }
+
 }

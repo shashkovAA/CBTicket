@@ -86,6 +86,12 @@ public class PropertyDataService {
             propRepo.save(new PropertyDAO(PropertyNameEnum.CALLBACK_ATTEMPTS_TIMEOUT, "1", "Таймаут в минутах между попытками calback-a, если соединения не произошло", true, false));
         }
 
+        oPropertyDAO = propRepo.findByNameIgnoringCase(PropertyNameEnum.EXPORT_DATA_DELIMITER);
+        if (!oPropertyDAO.isPresent()) {
+            log.debug("Property ["+PropertyNameEnum.EXPORT_DATA_DELIMITER+"] not found in database and will be added with value [';']");
+            propRepo.save(new PropertyDAO(PropertyNameEnum.EXPORT_DATA_DELIMITER, "';'", "Символ-разделитель, используемый при экспорте данных в csv-файл.", true, false));
+        }
+
         List<Property> propList = findAllProperties();
         log.debug("Loaded " + propList.size()+ " properties from DB.");
 

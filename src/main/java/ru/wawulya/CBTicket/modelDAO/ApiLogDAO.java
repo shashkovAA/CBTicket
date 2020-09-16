@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.wawulya.CBTicket.enums.LogLevel;
+import ru.wawulya.CBTicket.model.ApiLog;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -87,5 +88,20 @@ public class ApiLogDAO {
         this.sessionId = sessionId;
         this.username = username;
         this.host = host;
+    }
+
+    public ApiLog toApiLog() {
+        ApiLog apiLog = new ApiLog();
+        apiLog.setUsername(username);
+        apiLog.setDate(date);
+        apiLog.setLevel(level);
+        apiLog.setMethod(method);
+        apiLog.setApiUrl(apiUrl);
+        apiLog.setRequestBody(requestBody);
+        apiLog.setResponseBody(responseBody);
+        apiLog.setStatusCode(statusCode);
+        apiLog.setHost(host);
+        apiLog.setSessionId(sessionId);
+        return apiLog;
     }
 }

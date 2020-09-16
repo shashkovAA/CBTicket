@@ -102,7 +102,7 @@ public class CompCodeDataService {
         return completionCode;
     }
 
-    public List<CompletionCode> getAllCompCodes() {
+    public List<CompletionCode> findAllCompCodes() {
 
         List<CompletionCodeDAO> CompletionCodeDAO = compCodeRepo.findAll();
 

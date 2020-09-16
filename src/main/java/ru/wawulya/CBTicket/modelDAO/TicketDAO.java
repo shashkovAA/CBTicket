@@ -2,12 +2,15 @@ package ru.wawulya.CBTicket.modelDAO;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import ru.wawulya.CBTicket.model.CompletionCode;
 import ru.wawulya.CBTicket.model.Ticket;
+import ru.wawulya.CBTicket.model.TicketParams;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -64,5 +67,20 @@ public class TicketDAO {
         this.attemptDAOs.add(attemptDAO);
     }
 
+    public Ticket toTicket() {
+
+        Ticket ticket = new Ticket();
+        ticket.setId(id);
+        ticket.setCbNumber(cbNumber);
+        ticket.setCbDate(cbDate);
+        ticket.setCreateDate(createDate);
+        ticket.setAttemptCount(attemptCount);
+        ticket.setFinished(finished);
+        ticket.setTicketParams(ticketParamsDAO.toTicketParams());
+        ticket.setAttempts(attemptDAOs.stream().map(AttemptDAO::toAttempt).collect(Collectors.toList()));
+        ticket.setLastCompletionCode(new CompletionCode(completionCodeDAO));
+
+        return ticket;
+    }
 }
 

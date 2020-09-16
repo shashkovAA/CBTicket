@@ -10,6 +10,8 @@ import ru.wawulya.CBTicket.modelDAO.TicketParamsDAO;
 @NoArgsConstructor
 public class TicketParams {
 
+    private Long id;
+    private Long ticketId;
     private String cbUrl;
     private String ucidOld;
     private String cbType;
@@ -18,13 +20,4 @@ public class TicketParams {
     private int cbMaxAttempts;
     private int cbAttemptsTimeout;
 
-    public TicketParams (TicketParamsDAO ticketParamsDAO) {
-        cbUrl = ticketParamsDAO.getCbUrl();
-        ucidOld = ticketParamsDAO.getUcidOld();
-        cbType = ticketParamsDAO.getCbType();
-        cbSource = ticketParamsDAO.getCbSource();
-        cbOriginator = ticketParamsDAO.getCbOriginator();
-        cbMaxAttempts = ticketParamsDAO.getCbMaxAttempts();
-        cbAttemptsTimeout = ticketParamsDAO.getCbAttemptsTimeout();
-    }
 }

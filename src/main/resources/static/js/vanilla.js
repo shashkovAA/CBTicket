@@ -3,7 +3,5 @@ document.addEventListener('DOMContentLoaded', function() {
     var instances = M.FormSelect.init(elems);
 });
 
-/*$(document).ready(function(){
-    $('select').material_select();
-});*/
 
+var instance = M.Tabs.init(el, options);

@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>CBTicket Logs</title>
+    <link   th:href="@{/css/common.css}" rel="stylesheet" />
+    <link   th:href="@{/css/cust.css}" rel="stylesheet" />
+    <link   th:href="@{/css/materialize.min.css}" rel="stylesheet" media="screen,projection"/>
+
+    <!--<script
+            src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>-->
+
+    <head>
+    <body class="grey lighten-5" ng-app="ManagementModule" ng-controller="DataController">
+
+        <nav>
+            <div class="nav-wrapper">
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <ul id="nav-mobile" class="left hide-on-med-and-down">
+                            <li><a href="home">Home</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
+                            <li class="active"><a href="data">Database</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
+                            <li><a href="logs">Logs</a></li>
+                            <li><a href="logout">Logout</a></li>
+                        </ul>
+                        <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
+                            <li sec:authorize="isAuthenticated()">
+                                Hello, <span sec:authentication="name"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+
+
+       <!-- <div class="container">-->
+            <div class="row">
+                <div class="col s1 offset-s1">
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+
+                    <div class="row">
+                         <span class="hlink">
+                            <a href="#" ng-click="switch(1)">ticket</a>
+                         </span>
+                    </div>
+                    <div class="row">
+                        <span class="hlink">
+                            <a href="#" ng-click="switch(2)">ticket_params</a>
+                        </span>
+                    </div>
+                    <div class="row">
+                         <span class="hlink">
+                            <a href="#" ng-click="switch(3)">attempt</a>
+                         </span>
+                    </div>
+                    <div class="row">
+                        <span class="hlink">
+                            <a href="#" ng-click="switch(4)">apilog</a>
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="col s9">
+
+                        <div class="row" ng-show = "form1">
+
+                                <h5>Ticket table:</h5>
+
+
+
+                        </div>
+
+                        <div class="row" ng-show = "form2">
+
+                                <h5>TicketParams table:</h5>
+
+                        </div>
+
+                        <div class="row" ng-show = "form3">
+
+                                <h5>Attempt table:</h5>
+
+                        </div>
+
+                        <div class="row" ng-show = "form4">
+                            <div class="col s12">
+                                <h5>ApiLog table:</h5>
+
+                                <table class="striped">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>User</th>
+                                        <th>Method</th>
+                                        <th>URL</th>
+                                        <th>requestBody</th>
+                                        <th>responseBody</th>
+                                        <th>sessionId</th>
+                                    </tr>
+
+                                    <tr ng-repeat="apiLog in apiLogs">
+                                        <td> {{apiLog.date}}</td>
+                                        <td> {{apiLog.username}}</td>
+                                        <td> {{apiLog.method}}</td>
+                                        <td> {{apiLog.apiUrl}}</td>
+                                        <td> {{apiLog.requestBody}}</td>
+                                        <td> {{apiLog.responseBody}}</td>
+                                        <td> {{apiLog.sessionId}}</td>
+
+                                    </tr>
+
+                                </table>
+
+                                <h1>Todos</h1>
+                                <h4>{{todos.length}} total</h4>
+                                <ul>
+                                    <li ng-repeat="todo in filteredTodos">{{todo.text}}</li>
+                                </ul>
+                                <pagination
+                                        ng-model="currentPage"
+                                        total-items="todos.length"
+                                        max-size="maxSize"
+                                        boundary-links="true">
+                                </pagination>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+            </div>
+       <!-- </div>-->
+
+
+    </body>
+    <script th:src="@{angular.js}"></script>
+    <script th:src="@{js/materialize.min.js}"></script>
+    <script th:src="@{/js/mainApp.js}"></script>
+    <script th:src="@{/js/data.js}"></script>
+    <script>
+        $(document).ready(function(){
+        $('.tabs').tabs();
+        });
+    </script>
+</html>

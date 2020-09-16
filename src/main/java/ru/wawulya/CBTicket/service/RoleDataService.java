@@ -4,10 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.wawulya.CBTicket.data.JpaRoleRepository;
+import ru.wawulya.CBTicket.model.Role;
 import ru.wawulya.CBTicket.modelDAO.RoleDAO;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,7 +52,11 @@ public class RoleDataService {
         return roleRepo.findByName(name);
     }
 
-    public List<RoleDAO> findAll() {
+   /* public List<RoleDAO> findAll() {
         return roleRepo.findAll();
+    }*/
+
+    public List<Role> findAll() {
+        return roleRepo.findAll().stream().map(r->r.toRole()).collect(Collectors.toList());
     }
 }

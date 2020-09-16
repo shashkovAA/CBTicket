@@ -1,6 +1,7 @@
 package ru.wawulya.CBTicket.model;
 
 import lombok.*;
+import ru.wawulya.CBTicket.modelDAO.AttemptDAO;
 import ru.wawulya.CBTicket.modelDAO.TicketDAO;
 
 import java.sql.Timestamp;
@@ -15,6 +16,7 @@ public class Ticket{
     private Long id;
     private String cbNumber;
     private Timestamp cbDate;
+    private Timestamp createDate;
     private int attemptCount;
     private boolean finished;
     private TicketParams ticketParams;
@@ -27,11 +29,12 @@ public class Ticket{
         id = ticketDAO.getId();
         cbNumber = ticketDAO.getCbNumber();
         cbDate = ticketDAO.getCbDate();
+        createDate = ticketDAO.getCreateDate();
         attemptCount = ticketDAO.getAttemptCount();
         finished = ticketDAO.isFinished();
-        ticketParams = new TicketParams(ticketDAO.getTicketParamsDAO());
-        lastCompletionCode = new CompletionCode(ticketDAO.getCompletionCodeDAO());
-        attempts = ticketDAO.getAttemptDAOs().stream().map(a -> new Attempt(a)).collect(Collectors.toList());
+        ticketParams = ticketDAO.getTicketParamsDAO().toTicketParams();
+        lastCompletionCode = ticketDAO.getCompletionCodeDAO().toCompletionCode();
+        attempts = ticketDAO.getAttemptDAOs().stream().map(AttemptDAO::toAttempt).collect(Collectors.toList());
     }
 
 }

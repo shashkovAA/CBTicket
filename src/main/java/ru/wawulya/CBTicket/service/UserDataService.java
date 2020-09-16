@@ -51,13 +51,7 @@ public class UserDataService {
     }
 
     public List<User> getAllUsers() {
-        List<UserDAO> usersDAO = userRepo.findAll();
-
-        List<User> users = usersDAO
-                .stream()
-                .map(u -> u.toUser())
-                .collect(Collectors.toList());
-        return users;
+        return userRepo.findAll().stream().map(u -> u.toUser()).collect(Collectors.toList());
     }
 
     public User addUser(User user) {
