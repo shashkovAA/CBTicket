@@ -41,6 +41,8 @@ public class DataService {
     private TicketDataService ticketDataService;
     private AttemptDataService attemptDataService;
     private TicketParamsDataService ticketParamsDataService;
+    private PromptDataService promptDataService;
+    private SourceDataService sourceDataService;
 
     @Autowired
     public DataService(
@@ -52,7 +54,9 @@ public class DataService {
                        RoleDataService roleService,
                        LogDataService logService,
                        AttemptDataService attemptDataService,
-                       TicketParamsDataService ticketParamsDataService) {
+                       TicketParamsDataService ticketParamsDataService,
+                       PromptDataService promptDataService,
+                       SourceDataService sourceDataService) {
 
 
         this.ticketDataService = ticketDataService;
@@ -63,6 +67,8 @@ public class DataService {
         this.logService = logService;
         this.attemptDataService = attemptDataService;
         this.ticketParamsDataService = ticketParamsDataService;
+        this.promptDataService = promptDataService;
+        this.sourceDataService = sourceDataService;
     }
 
 }
