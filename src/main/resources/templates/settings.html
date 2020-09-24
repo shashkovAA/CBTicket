@@ -14,17 +14,21 @@
                     <div class="col s10 offset-s1">
                         <ul id="nav-mobile" class="left hide-on-med-and-down">
                             <li><a href="home">Home</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="config">Config</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')" class="active"><a href="settings">Settings</a></li>
                             <li><a href="database">Database</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
                             <li><a href="logs">Logs</a></li>
-                            <li><a href="logout">Logout</a></li>
+
                         </ul>
                         <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
                             <li sec:authorize="isAuthenticated()">
-                                Hello, <span sec:authentication="name"></span>
+                                <i>
+                                    Hello, <span sec:authentication="name"></span>
+                                </i>
                             </li>
+                            <li><a href="logout">Logout</a></li>
                         </ul>
                     </div>
                 </div>
@@ -41,93 +45,22 @@
                     </div>
                 </div>
 
-
-                <!--Секция списка загруженных конфиг файлов и форма загрузки-->
-
-                <div class="row">
-
-                    <div class="col s12 m8 l5">
-
-                        <h5>Configuration files:</h5>
-
-                        <table>
-                            <tr>
-                                <th>Name</th>
-                                <th>Modify date</th>
-                            </tr>
-                            <tr ng-repeat="file in files">
-                                <td> <a class="hlink" href="api/settings/download/{{file.filename}}">{{file.filename}}</a></td>
-                                <td >{{ file.lastModifyDate }}</td>
-                                <td>
-                                    <a title="Delete" ng-confirm-click="Are you sure to delete file [{{file.filename}}] " confirmed-click="form1_deleteFile(file)">
-                                        <img class="scale" th:src="@{/images/delete1.png}" width="25" height="25" />
-                                    </a>
-                                </td>
-
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="col s4 m3 l3 offset-l1">
-
-                        <h5>Upload config file :</h5>
-
-                        <form action="#" ng-submit="form1_importFile()">
-
-                                <div class="row">
-                                    <div class="file-field input-field ">
-
-                                        <input type="file" file-model="settingsFile">
-
-                                        <div class="file-path-wrapper">
-                                            <input class="file-path validate" type="text" placeholder="Upload file">
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
-                                <div class="row">
-                                    <div class="col">
-                                        <input class="standard" type="submit" value="Import" />
-                                    </div>
-
-                                </div>
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-
-                <div class="row"/>
-
+                <!-- Properties settings-->
 
                 <div class="row">
                     <div class="col s12">
                         <h5>
-                            Properties CBTicket application
+                            Properties of application
                         </h5>
                     </div>
                 </div>
 
-                <!--<div class="row" ng-show="!showForm">
-                    <div class="col s12">
-
-                        <span class="right hlink">
-                            <a href="/api/properties/export">Export properties.csv</a>
-                        </span>
-
-                    </div>
-                </div>-->
-
                 <div class="row">
                     <div class="col s12">
 
-                        <div ng-show="showForm">
+                        <div ng-show="showEditProperty">
 
-                            <form ng-submit="form2_submitBtn()" >
+                            <form ng-submit="submitProperty()" >
 
                                 <div class="row">
 
@@ -144,7 +77,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col s12">
-                                                <input class="standard" type="button" value="Cancel" ng-click="form2_cancelBtn()" />
+                                                <input class="standard" type="button" value="Cancel" ng-click="cancelProperty()" />
                                             </div>
                                         </div>
 
@@ -191,8 +124,8 @@
                                 <td> {{ property.name }}</td>
                                 <td >{{ property.value }}</td>
                                 <td >{{ property.description }}</td>
-                                <td>
-                                    <a title="Edit" ng-click="form2_editProperty(property)" ng-class="{'disable': ( !{{ property.editable }} || showForm ) }">
+                                <td class="tcentr">
+                                    <a title="Edit" ng-click="editProperty(property)" ng-class="{'disable': ( !{{ property.editable }} || showForm ) }">
                                         <img class="scale" th:src="@{/images/edit2.png}" width="25" height="25" />
                                     </a>
                                 </td>
@@ -203,17 +136,236 @@
                 </div>
 
 
+                <!-- Prompt settings-->
+
+                <div class="row">
+                    <div class="col s12">
+                        <h5>
+                            Prompt table
+                        </h5>
+                    </div>
                 </div>
 
                 <div class="row">
-                    <div class="col s6">
-                        <h5>Restart application</h5>
-                        <br>
-                        <input class="standard" type="button"  ng-confirm-click="Are you sure to restart application?" confirmed-click="restartApp()" value="Restart" />
+                    <div class="col s12">
+                        <a title="New Prompt" ng-click="createPrompt()">
+                            <img class="scale" th:src="@{/images/add2.png}" width="35" height="35" ng-show = "!showEditPrompt"/>
+                        </a>
                     </div>
                 </div>
-            </div>
 
+                <div class="row">
+                    <div class="col s12">
+
+                        <div ng-show="showEditPrompt">
+
+                            <form ng-submit="submitPrompt()" >
+
+                                <div class="row">
+
+                                    <div class="col s12 m4 l4 xl3">
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <h6>{{promptActionHeader}}</h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <input class="standard" type="submit" value="Save"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <input class="standard" type="button" value="Cancel" ng-click="cancelPrompt()" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col s12 m6">
+                                        <div class="row">
+                                            <div class="input-field ">
+                                                <input placeholder="" id="p_name" type="text" class="validate" ng-model="prompt.name" required>
+                                                <label for="p_name">Name* :</label>
+                                            </div>
+
+                                            <div class="input-field ">
+                                                <input placeholder="" id="p_filepath" type="text" class="validate" ng-model="prompt.filepath" required>
+                                                <label for="p_filepath">File path* :</label>
+                                            </div>
+
+                                            <div class="input-field ">
+                                                <input placeholder="" id="p_filename" type="text" class="validate" ng-model="prompt.filename" required>
+                                                <label for="p_filename">File name* :</label>
+                                            </div>
+
+                                            <div class="input-field">
+                                                <input placeholder="" id="p_description" type="text" class="validate" ng-model="prompt.description">
+                                                <label for="p_description">Description :</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12">
+
+                        <table class="striped">
+                            <tr>
+                                <th>Name</th>
+                                <th>File Path</th>
+                                <th>File Name</th>
+                                <th>Description</th>
+
+                            </tr>
+                            <tr ng-repeat="prompt in prompts">
+                                <td> {{ prompt.name }}</td>
+                                <td >{{ prompt.filepath }}</td>
+                                <td >{{ prompt.filename }}</td>
+                                <td >{{ prompt.description }}</td>
+                                <td class="tcentr">
+                                    <a title="Edit Prompt" ng-click="editPrompt(prompt)" ng-class="{'disable': ( showEditPrompt ) }">
+                                        <img class="scale" th:src="@{/images/edit2.png}" width="25" height="25" />
+                                    </a>
+                                </td >
+                                <td class="tcentr">
+                                    <a title="Delete Prompt" ng-confirm-click="Are you sure to delete this Prompt?" confirmed-click="deletePrompt(prompt)" ng-class="{'disable': ( showEditPrompt ) }">
+                                        <img class="scale" th:src="@{/images/delete2.png}" width="25" height="25" />
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- Source settings-->
+
+                <div class="row">
+                    <div class="col s12">
+                        <h5>
+                            Source table
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12">
+                        <a title="New Source" ng-click="createSource()">
+                            <img class="scale" th:src="@{/images/add2.png}" width="35" height="35" ng-show = "!showEditSource"/>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12">
+
+                        <div ng-show="showEditSource">
+
+                            <form ng-submit="submitSource()" >
+
+                                <div class="row">
+
+                                    <div class="col s12 m4 l4 xl3">
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <h6>{{sourceActionHeader}}</h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <input class="standard" type="submit" value="Save"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <input class="standard" type="button" value="Cancel" ng-click="cancelSource()" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col s12 m6">
+                                        <div class="row">
+                                            <div class="input-field">
+                                                <input placeholder="" id="s_name" type="text" class="validate" ng-model="source.name" required>
+                                                <label for="s_name">Name* :</label>
+                                            </div>
+
+                                            <div class="input-field">
+                                                <input placeholder="" id="s_url" type="text" class="validate" ng-model="source.url" >
+                                                <label for="s_url">Url :</label>
+                                            </div>
+
+                                            <div class="input-field">
+                                                <input placeholder="" id="s_skpid" type="text" class="validate" ng-model="source.skpid" >
+                                                <label for="s_skpid">Skpid :</label>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col s6">
+                                                    <label>Prompt :</label>
+                                                    <select  id="promptSelector" class="browser-default" ng-model="source.prompt" ng-change="updateSelectedPrompt()">
+                                                        <option ng-repeat="prompt in prompts">{{prompt.name}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-field">
+                                                <input placeholder="" id="s_description" type="text" class="validate" ng-model="source.description">
+                                                <label for="s_description">Description :</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12">
+
+                        <table class="striped">
+                            <tr>
+                                <th>Name</th>
+                                <th>Url</th>
+                                <th>SkpId</th>
+                                <th>Prompt</th>
+                                <th>Description</th>
+
+                            </tr>
+                            <tr ng-repeat="source in sources">
+                                <td> {{ source.name }}</td>
+                                <td >{{ source.url }}</td>
+                                <td >{{ source.skpid }}</td>
+                                <td >{{ source.prompt.name }}</td>
+                                <td >{{ source.description }}</td>
+                                <td class="tcentr">
+                                    <a title="Edit Source" ng-click="editSource(source)" ng-class="{'disable': ( showEditSource ) }">
+                                        <img class="scale" th:src="@{/images/edit2.png}" width="25" height="25" />
+                                    </a>
+                                </td >
+                                <td class="tcentr">
+                                    <a title="Delete Source" ng-confirm-click="Are you sure to delete this Source?" confirmed-click="deleteSource(source)" ng-class="{'disable': ( showEditSource ) }">
+                                        <img class="scale" th:src="@{/images/delete2.png}" width="25" height="25" />
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
 
     </body>
@@ -222,5 +374,6 @@
     <script th:src="@{/js/mainApp.js}"></script>
     <script th:src="@{/js/settings.js}"></script>
     <script th:src="@{js/materialize.min.js}"></script>
+    <script th:src="@{/js/dataObj.js}"></script>
 
 </html>

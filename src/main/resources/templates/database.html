@@ -19,17 +19,21 @@
                     <div class="col s10 offset-s1">
                         <ul id="nav-mobile" class="left hide-on-med-and-down">
                             <li><a href="home">Home</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="config">Config</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
-                            <li class="active"><a href="data2">Database</a></li>
+                            <li class="active"><a href="database">Database</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
                             <li><a href="logs">Logs</a></li>
-                            <li><a href="logout">Logout</a></li>
+
                         </ul>
                         <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
                             <li sec:authorize="isAuthenticated()">
-                                Hello, <span sec:authentication="name"></span>
+                                <i>
+                                    Hello, <span sec:authentication="name"></span>
+                                </i>
                             </li>
+                            <li><a href="logout">Logout</a></li>
                         </ul>
                     </div>
                 </div>
@@ -66,9 +70,9 @@
                          </span>
                     </div>
                     <div class="row">
-                         <span class="hlink">
-                            <a href="#" ng-click="switch('message')">message</a>
-                         </span>
+                            <span class="hlink">
+                                <a href="#" ng-click="switch('prompt')">prompt</a>
+                            </span>
                     </div>
                     <div class="row">
                         <span class="hlink">
@@ -92,7 +96,7 @@
                     </div>
                     <div class="row">
                         <span class="hlink">
-                            <a href="#" ng-click="switch('url')">url</a>
+                            <a href="#" ng-click="switch('source')">source</a>
                         </span>
                     </div>
                     <div class="row">
@@ -272,6 +276,32 @@
                 <div class="row" ng-show = "message">
 
                     <h5>Message table:</h5>
+
+                </div>
+
+                <div class="row" ng-show = "prompt">
+
+                    <div class="col s12">
+
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Prompt table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="standard" type="button" value="Export" ng-click="prompt_export()" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="prompt_gridOptions" class="myGrid"></div>
+                            </div>
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -455,9 +485,29 @@
 
                 </div>
 
-                <div class="row" ng-show = "url">
+                <div class="row" ng-show = "source">
 
-                    <h5>Url table:</h5>
+                    <div class="col s12">
+
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Source table:</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="standard" type="button" value="Export" ng-click="source_export()" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12">
+                                <div ui-grid="source_gridOptions" class="myGrid"></div>
+                            </div>
+                        </div>
+
+                    </div>
 
                 </div>
 

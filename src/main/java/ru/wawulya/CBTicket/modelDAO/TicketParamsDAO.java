@@ -38,12 +38,17 @@ public class TicketParamsDAO {
     @Column(name="cb_attempts_timeout")
     private int cbAttemptsTimeout;
 
-    public TicketParamsDAO(TicketDAO ticketDAO, String cbUrl, String ucidOld, String cbType, String cbSource, String cbVdnNumber, int cbMaxAttempts, int cbAttemptsTimeout) {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="cb_source_id", nullable = false)
+    private SourceDAO sourceDAO;
+
+    public TicketParamsDAO(TicketDAO ticketDAO, String cbUrl, String ucidOld, String cbType, String cbSource, SourceDAO sourceDAO, String cbVdnNumber, int cbMaxAttempts, int cbAttemptsTimeout) {
         this.ticketDAO = ticketDAO;
         this.cbUrl = cbUrl;
         this.ucidOld = ucidOld;
         this.cbType = cbType;
         this.cbSource = cbSource;
+        this.sourceDAO = sourceDAO;
         this.cbOriginator = cbVdnNumber;
         this.cbMaxAttempts = cbMaxAttempts;
         this.cbAttemptsTimeout = cbAttemptsTimeout;
@@ -58,6 +63,7 @@ public class TicketParamsDAO {
         ticketParams.setUcidOld(ucidOld);
         ticketParams.setCbType(cbType);
         ticketParams.setCbSource(cbSource);
+        ticketParams.setSource(sourceDAO.toSource());
         ticketParams.setCbOriginator(cbOriginator);
         ticketParams.setCbMaxAttempts(cbMaxAttempts);
         ticketParams.setCbAttemptsTimeout(cbAttemptsTimeout);

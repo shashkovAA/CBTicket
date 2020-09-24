@@ -290,7 +290,8 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
             $scope.ticketFilter.cbNumber = "";
             $scope.ticketFilter.attemptCount = "";
             $scope.ticketFilter.finished = "";
-            $scope.ticketFilter.compCode = "";
+            $scope.ticketFilter.compCodeName = "";
+
     }
 
     $scope.ticket_export = function() {
@@ -348,6 +349,7 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
                            { name: 'cbMaxAttempts', displayName : 'Max Attempts'},
                            { name: 'cbAttemptsTimeout', displayName : 'Attempts Timeout' },
                            { name: 'cbSource', displayName : 'Callback Source' },
+                           { name: 'source.id', displayName : 'Source Id' },
                            { name: 'cbType', displayName : 'Callback Type' },
                            { name: 'cbOriginator', displayName : 'Callback Originator'},
                            { name: 'cbUrl', displayName : 'Callback URL'},
@@ -460,6 +462,51 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
                             });
     }
 
+    <!-------------------------------------------------------Prompt table ---------------------------------------------------------->
+
+        $scope.prompt_gridOptions = {
+            enableColumnMenus:false,
+            enableSorting: true,
+            enableGridMenu: true,
+            columnDefs: [
+            { name: 'id', width:50 },
+            { name: 'name', width:200},
+            { name: 'filepath'},
+            { name: 'filename', width:200},
+            { name: 'description'}
+            ],
+            onRegisterApi: function(gridApi) {
+                $scope.gridApi = gridApi;
+            }
+        }
+
+        function prompt_search() {
+
+            console.log("Run prompt_search()");
+            $http.get('/api/prompt/all')
+                .then(function(response) {
+                    $scope.prompt_gridOptions.data  = response.data;
+                  });
+        }
+
+        $scope.prompt_export = function() {
+
+            $http({
+                method: "GET",
+                url: "/api/prompt/export",
+            }).then(function(res, status, headers, config) {
+                         var anchor = angular.element('<a/>');
+                         anchor.attr({
+                         href: 'data:attachment/csv;charset=utf-8,' + encodeURI(res.data),
+                         target: '_blank',
+                         download: 'prompts.csv'
+                    })[0].click()},
+                            function(res) { // error
+                                alert("Error: " + res.status + ". Message : " + res.data.message);
+                            });
+
+            }
+
     <!-------------------------------------------------------Property table ---------------------------------------------------------->
 
     $scope.property_gridOptions = {
@@ -499,10 +546,59 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
                      download: 'properties.csv'
                 })[0].click()},
                         function(res) { // error
-                            console.log("Error: " + res.status + " : " + res.data);
+                            alert("Error: " + res.status + ". Message : " + res.data.message);
                         });
 
         }
+
+    <!-------------------------------------------------------Source table ---------------------------------------------------------->
+
+        $scope.source_gridOptions = {
+            enableColumnMenus:false,
+            enableSorting: true,
+            enableGridMenu: true,
+            columnDefs: [
+            { name: 'id', width:50 },
+            { name: 'name', width:200},
+            { name: 'url'},
+            { name: 'skpid', width:100},
+            { name: 'prompt.name', displayName: 'Prompt Name', width:200},
+            { name: 'description'}
+            ],
+            onRegisterApi: function(gridApi) {
+                $scope.gridApi = gridApi;
+            }
+        }
+
+        function source_search() {
+
+            console.log("Run source_search()");
+            $http.get('/api/source/all')
+                .then(function(response) {
+                        $scope.source_gridOptions.data  = response.data,
+                      function(res) { // error
+                        alert("Error: " + res.status + ". Message : " + res.data.message);}
+                  });
+        }
+
+        $scope.source_export = function() {
+
+            $http({
+                method: "GET",
+                url: "/api/source/export",
+            }).then(function(res, status, headers, config) {
+                         var anchor = angular.element('<a/>');
+                         anchor.attr({
+                         href: 'data:attachment/csv;charset=utf-8,' + encodeURI(res.data),
+                         target: '_blank',
+                         download: 'sources.csv'
+                    })[0].click()},
+                    function(res) { // error
+                        alert("Error: " + res.status + ". Message : " + res.data.message);
+                    });
+
+            }
+
 
     <!-------------------------------------------------------User table ---------------------------------------------------------->
 
@@ -557,6 +653,8 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
               });
     }
 
+     <!-------------------------------------------------------------------------------------------------------------------------->
+
     $scope.switch = function(formName) {
 
             clearForm();
@@ -566,11 +664,12 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
                 case 'attempt':         $scope.attempt = true; break;
                 case 'completion_code': $scope.completion_code = true; compCode_search(); break;
                 case 'message':         $scope.message = true; break;
+                case 'prompt':          $scope.prompt = true; prompt_search(); break;
                 case 'property':        $scope.property = true; property_search(); break;
                 case 'roles':           $scope.roles = true; role_search(); break;
                 case 'ticket':          $scope.ticket = true; break;
                 case 'ticket_params':   $scope.ticket_params = true; break;
-                case 'url':             $scope.url = true; break;
+                case 'source':          $scope.source = true; source_search(); break;
                 case 'users':           $scope.users = true; user_search(); break;
             }
         }
@@ -580,11 +679,12 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
             $scope.attempt = false;
             $scope.completion_code = false;
             $scope.message = false;
+            $scope.prompt = false;
             $scope.property = false;
             $scope.roles = false;
             $scope.ticket = false;
             $scope.ticket_params = false;
-            $scope.url = false;
+            $scope.source = false;
             $scope.users = false;
         }
 

@@ -1,6 +1,7 @@
 package ru.wawulya.CBTicket.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -95,6 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .anyRequest()
                     .hasAnyRole("API","USER","ADMIN")
+
             .and()
                     .httpBasic()
                     .authenticationEntryPoint(authEntryPoint);
@@ -113,6 +115,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .csrf()
                     .disable();
 
+            /*http
+                    .requestMatcher(EndpointRequest.toAnyEndpoint()).authorizeRequests((requests) ->
+                    requests.anyRequest().permitAll());*/
+
             http
                     .authorizeRequests()
                     .antMatchers("/", "/css/**", "/js/**").permitAll()
@@ -128,6 +134,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     .permitAll()
                     .logoutSuccessUrl("/login");
+
 
             http
                     .headers()

@@ -9,7 +9,7 @@
     <head>
 </head>
 <body>
-        <nav>
+        <!--<nav>
             <div class="nav-wrapper">
                 <div class="row">
                     <div class="col s10 offset-s1">
@@ -26,6 +26,33 @@
                             <li sec:authorize="isAuthenticated()">
                                 Hello, <span sec:authentication="name"></span>
                             </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>-->
+
+        <nav>
+            <div class="nav-wrapper">
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <ul id="nav-mobile" class="left hide-on-med-and-down">
+                            <li class="active"><a href="home">Home</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="config">Config</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
+                            <li><a href="database">Database</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
+                            <li><a href="logs">Logs</a></li>
+
+                        </ul>
+                        <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
+                            <li sec:authorize="isAuthenticated()">
+                                <i>
+                                    Hello, <span sec:authentication="name"></span>
+                                </i>
+                            </li>
+                            <li><a href="logout">Logout</a></li>
                         </ul>
                     </div>
                 </div>

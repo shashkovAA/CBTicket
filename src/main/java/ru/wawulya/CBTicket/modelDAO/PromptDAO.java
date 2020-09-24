@@ -18,9 +18,16 @@ public class PromptDAO {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique=true)
     private String name;
+
+    @Column(nullable = false)
     private String filepath;
+
+    @Column(nullable = false)
     private String filename;
+
     private String description;
 
     @OneToMany(mappedBy = "promptDAO", fetch = FetchType.LAZY /*, cascade = CascadeType.ALL, */)
@@ -31,6 +38,14 @@ public class PromptDAO {
         this.filepath = filepath;
         this.filename = filename;
         this.description = description;
+    }
+
+    public PromptDAO (Prompt prompt) {
+        this.id = prompt.getId();
+        this.name = prompt.getName();
+        this.filepath = prompt.getFilepath();
+        this.filename = prompt.getFilename();
+        this.description = prompt.getDescription();
     }
 
     public Prompt toPrompt() {

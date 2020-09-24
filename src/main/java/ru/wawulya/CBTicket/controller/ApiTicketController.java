@@ -92,14 +92,17 @@ public class ApiTicketController {
         String cbUrlFromJson = jsonNode.path(TicketFieldsEnum.CB_URL).asText();
         log.info(getSession().getUuid() + " | Get cbUrl from Json :" + cbUrlFromJson);
 
+        String cbSourceFromJson = jsonNode.path(TicketFieldsEnum.CB_SOURCE).asText();
+        log.info(getSession().getUuid() + " | Get cbSource from Json :" + cbSourceFromJson);
+
+        SourceDAO sourceDAO = dataService.getSourceDataService().findByNameAndUrlOrDefault(cbSourceFromJson, cbUrlFromJson);
+
         String ucidOldFromJson = jsonNode.path(TicketFieldsEnum.CB_UCID_OLD).asText();
         log.info(getSession().getUuid() + " | Get ucidOld from Json :" + ucidOldFromJson);
 
         String cbTypeFromJson = jsonNode.path(TicketFieldsEnum.CB_TYPE).asText();
         log.info(getSession().getUuid() + " | Get cbType from Json :" + cbTypeFromJson);
 
-        String cbSourceFromJson = jsonNode.path(TicketFieldsEnum.CB_SOURCE).asText();
-        log.info(getSession().getUuid() + " | Get cbSource from Json :" + cbSourceFromJson);
 
         int cbMaxAttemtsFromJson = jsonNode.path(TicketFieldsEnum.CB_MAX_ATTEMPTS).asInt();
         log.info(getSession().getUuid() + " | Get cbMaxAttempts from Json :" + cbMaxAttemtsFromJson);
@@ -115,7 +118,7 @@ public class ApiTicketController {
 
         TicketDAO ticketDAO = new TicketDAO(cbNumber, cbDateT, compCodeDefault);
 
-        ticketDAO.setTicketParamsDAO(new TicketParamsDAO(ticketDAO, cbUrlFromJson, ucidOldFromJson, cbTypeFromJson, cbSourceFromJson, cbOriginatorFromJson, cbMaxAttemtsFromJson, cbAttemtsTimeoutFromJson));
+        ticketDAO.setTicketParamsDAO(new TicketParamsDAO(ticketDAO, cbUrlFromJson, ucidOldFromJson, cbTypeFromJson, cbSourceFromJson, sourceDAO, cbOriginatorFromJson, cbMaxAttemtsFromJson, cbAttemtsTimeoutFromJson));
 
         ticketDAO = dataService.getTicketDataService().save(ticketDAO);
 
@@ -132,6 +135,26 @@ public class ApiTicketController {
                 String.valueOf(response.getStatus()),
                 request.getRemoteAddr());
          return result;
+    }
+    //Тестовый метод
+    @PostMapping(value = "/ticket/add/test", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RequestResult createCallbackTicket2(HttpServletRequest request, HttpServletResponse response, @RequestBody Ticket ticket) {
+
+        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
+
+        RequestResult result = new RequestResult("Success","Created ticket for callback: ");
+
+        dataService.getLogService().saveLog(
+                getSession().getUuid().toString(),
+                request.getRemoteUser(),
+                LogLevel.INFO,
+                request.getMethod(),
+                request.getRequestURI(),
+                "",
+                utils.createJsonStr(getSession().getUuid(),result),
+                String.valueOf(response.getStatus()),
+                request.getRemoteAddr());
+        return result;
     }
 
     @GetMapping(value = "/ticket/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

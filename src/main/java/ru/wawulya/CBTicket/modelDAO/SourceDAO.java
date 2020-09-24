@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import ru.wawulya.CBTicket.model.Source;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -26,6 +28,9 @@ public class SourceDAO {
     @JoinColumn(name="prompt_id", nullable = false)
     private PromptDAO promptDAO;
 
+    @OneToMany(mappedBy = "sourceDAO", fetch = FetchType.LAZY /*, cascade = CascadeType.ALL, */)
+    List<TicketParamsDAO> ticketParamsDAOs = new ArrayList<>();
+
     public SourceDAO(String name, String url, String skpid, String description, PromptDAO promptDAO) {
         this.name = name;
         this.url = url;
@@ -33,6 +38,16 @@ public class SourceDAO {
         this.description = description;
         this.promptDAO = promptDAO;
     }
+
+    public SourceDAO(Source source) {
+        this.id = source.getId();
+        this.name = source.getName();
+        this.url = source.getUrl();
+        this.skpid = source.getSkpid();
+        this.promptDAO = new PromptDAO(source.getPrompt());
+        this.description = source.getDescription();
+    }
+
 
     public Source toSource() {
         Source source = new Source();

@@ -16,6 +16,7 @@ public class TicketParams {
     private String ucidOld;
     private String cbType;
     private String cbSource;
+    private Source source;
     private String cbOriginator;
     private int cbMaxAttempts;
     private int cbAttemptsTimeout;
