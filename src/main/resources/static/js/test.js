@@ -1,9 +1,14 @@
-var app = angular.module("CBTicket", []);
 
 app.controller("TestController", function($scope, $http) {
 
-    clearForm();
-    $scope.home = true;
+    $scope.compcodes = [];
+    $scope.compcode = {
+        id : 0,
+        name : "",
+        sysname : "",
+        description : "",
+        recall : false
+    };
 
     $scope.form2_ticket = {
             cbNumber: "",
@@ -15,7 +20,13 @@ app.controller("TestController", function($scope, $http) {
             cbOriginator: "",
             cbMaxAttempts: "",
             cbAttemptsTimeout: ""
-        };
+    };
+    $scope.cbDate = "";
+    $scope.cbTime = "";
+
+    clearForm();
+
+    getCompCodes();
 
     $scope.form8_getTicketBtn = false;
 
@@ -23,12 +34,24 @@ app.controller("TestController", function($scope, $http) {
 
     $scope.form2_addTicket = function() {
 
-        var method = "POST";
-        var url = '/api/ticket/add';
+        var currDate = new Date().toJSON().slice(0,10);
+        var cbDateTime = "";
+
+        if ($scope.cbDate == "")
+            cbDateTime = currDate;
+        else
+            cbDateTime = $scope.cbDate;
+
+        if ( $scope.cbTime == "")
+             cbDateTime = cbDateTime + ' 00:00';
+        else
+             cbDateTime = cbDateTime + ' ' + $scope.cbTime;
+
+        //console.log(angular.toJson($scope.form2_ticket));
 
         $http({
-            method: method,
-            url: url,
+            method: "POST",
+            url: '/api/ticket/add',
             data: angular.toJson($scope.form2_ticket),
             headers: {
                 'Content-Type': 'application/json'
@@ -201,14 +224,22 @@ app.controller("TestController", function($scope, $http) {
 
         };
 
-    var form8_compcode;
+    //var form8_compcode;
 
     $scope.form8_updateSelectedCompCode = function() {
 
-            console.log("Select: " + $scope.form8_select);
+            console.log("Select: " + $scope.compcode.name);
 
-            var method = "GET";
-            var url = "/api/compcode/fetch?sysname=" + $scope.form8_select;
+             $scope.compcodes.forEach(function (cmpcode) {
+                    //console.log("1" + angular.toJson(cmpcode));
+                        if (cmpcode.name == $scope.compcode.name) {
+                        $scope.cmpCodeActive = cmpcode;
+                        //console.log("2" + angular.toJson(cmpcode));
+                        }
+             });
+
+           /* var method = "GET";
+            var url = "/api/compcode/fetch?sysname=" + $scope.compcode.sysname;
 
             $http({
                 method: method,
@@ -224,13 +255,15 @@ app.controller("TestController", function($scope, $http) {
                 },
                 function(res) { // error
                     console.log("Error: " + res.status + " : " + res.data);
-                });
+                });*/
 
         }
 
+
+
     $scope.form8_updateTicket = function()  {
 
-                form8_ticket.lastCompletionCode = form8_compcode;
+                form8_ticket.lastCompletionCode = $scope.cmpCodeActive;
 
                 var lastAttemptIndex = form8_ticket.attempts.length - 1;
 
@@ -246,7 +279,7 @@ app.controller("TestController", function($scope, $http) {
                 form8_ticket.attempts[lastAttemptIndex].operatorNumber = $scope.form8_opNumber;
                 //console.log(" form8_ticket.attempts.operatorNumber: " +  form8_ticket.attempts[lastAttemptIndex].operatorNumber);
 
-                form8_ticket.attempts[lastAttemptIndex].completionCode = form8_compcode;
+                form8_ticket.attempts[lastAttemptIndex].completionCode = $scope.cmpCodeActive;
                 //console.log(" form8_ticket.attempts.completionCode: " +  form8_ticket.attempts[lastAttemptIndex].completionCode);
 
                 var method = "POST";
@@ -274,7 +307,23 @@ app.controller("TestController", function($scope, $http) {
 
     };
 
+    function getCompCodes() {
+
+        $http({
+            method: 'GET',
+            url: '/api/compcode/all'
+            }).then(function(res) { // success
+                $scope.compcodes = res.data;
+            },  function(res) { // error
+                 alert("Error: " + res.status + ". Message : " + res.data.message);
+            });
+            /*$scope.showEditProperty = false;*/
+            }
+
     $scope.clearForm2 = function() {
+
+        $scope.cbDate = "";
+        $scope.cbTime = "";
 
         $scope.form2_ticket.cbNumber = "";
         $scope.form2_ticket.cbDate = "";
@@ -283,17 +332,19 @@ app.controller("TestController", function($scope, $http) {
         $scope.form2_ticket.ucidOld = "";
         $scope.form2_ticket.cbType = "";
         $scope.form2_ticket.cbSource = "";
+        $scope.form2_ticket.cbMaxAttempts = "";
+        $scope.form2_ticket.cbAttemptsTimeout = "";
 
         $scope.form2_addTicketResult = "";
      };
 
-     $scope.clearForm3 = function() {
+    $scope.clearForm3 = function() {
 
         $scope.form3_ticketId = "";
         $scope.form3_getTicketByIdResult = "";
      };
 
-     $scope.clearForm4 = function() {
+    $scope.clearForm4 = function() {
 
         $scope.form4_cbNumber = "";
         $scope.form4_getTicketsByNumberResult = "";
@@ -331,33 +382,40 @@ app.controller("TestController", function($scope, $http) {
         $scope.form8_getTicketBtn = false;
         $scope.form8_submitBtn = true;
 
+        initCompCodeSelector();
+
     };
 
+    function initCompCodeSelector() {
+
+     var elem = document.querySelector('#comcodeSelector');
+            document.querySelectorAll('option')[0].selected = true;
+            M.FormSelect.init(elem);
+    }
 
     $scope.switch = function(number) {
                 
         clearForm();
+        //initCompCodeSelector();
 
         switch (number) { 
-            case 1:  $scope.home = true; break;
-            case 2:  $scope.form2 = true; break;
-            case 3:  $scope.form3 = true; break;
-            case 4:  $scope.form4 = true; break;
-            case 5:  $scope.form5 = true; break;
-            case 6:  $scope.form6 = true; break;
-            case 7:  $scope.form7 = true; break;
-            case 8:  $scope.form8 = true; break;
+            case 'add'   :  $scope.add = true; break;
+            case 'get'   :  $scope.get = true; break;
+            case 'find'  :  $scope.find = true; break;
+            case 'cancel':  $scope.cancel = true; break;
+            case 'delete':  $scope.delete = true; break;
+            case 'job'   :  $scope.job = true; break;
+            case 'update':  $scope.update = true; break;
         }
     }     
 
     function clearForm() {
-        $scope.home = false;
-        $scope.form2 = false;
-        $scope.form3 = false;
-        $scope.form4 = false;
-        $scope.form5 = false;
-        $scope.form6 = false;
-        $scope.form7 = false;
-        $scope.form8 = false;
+        $scope.add = false;
+        $scope.get = false;
+        $scope.find = false;
+        $scope.cancel = false;
+        $scope.delete = false;
+        $scope.job = false;
+        $scope.update = false;
     }
 });

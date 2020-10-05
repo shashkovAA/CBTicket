@@ -314,7 +314,7 @@ public class ApiTicketController {
         ticket = dataService.getTicketDataService().deleteTicketById(id);
 
         if (ticket == null)
-            throw new ForbiddenException(getSession().getUuid(), request.getMethod(), request.getRequestURI(), "Forbidden delete ticket with id [" + id + "], bacause it is not in state 'Finished'. Cancel ticket before delete.");
+            throw new ForbiddenException(getSession().getUuid(), request.getMethod(), request.getRequestURI(), "Forbidden delete ticket with id [" + id + "], because it is not in state 'Finished'. Cancel ticket before delete.");
 
         RequestResult result = new RequestResult("Success","Ticket with id ["+id+"] is deleted successfully.");
 

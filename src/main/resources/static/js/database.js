@@ -527,7 +527,7 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
     function property_search() {
 
         console.log("Run property_search()");
-        $http.get('/api/properties')
+        $http.get('/api/property/all')
             .then(function(response) {
                 $scope.property_gridOptions.data  = response.data;
               });
@@ -537,7 +537,7 @@ app.controller("DataController", ['$scope', '$http', 'apilogService', 'attemptSe
 
         $http({
             method: "GET",
-            url: "/api/properties/export",
+            url: "/api/property/export",
         }).then(function(res, status, headers, config) {
                      var anchor = angular.element('<a/>');
                      anchor.attr({

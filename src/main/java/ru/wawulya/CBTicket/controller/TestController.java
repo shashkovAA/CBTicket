@@ -42,12 +42,12 @@ public class TestController {
         this.utils = utils;
     }
 
-    @GetMapping
+   /* @GetMapping
     public String showTestForm(Model model) {
-        model.addAttribute("apiCBTicketMethodList", apiMethodList.getListApiCBTicketMethodsInfo());
-        model.addAttribute("compCodeList", dataService.getCompCodeDataService().findAllCompCodes());
+        //model.addAttribute("apiCBTicketMethodList", apiMethodList.getListApiCBTicketMethodsInfo());
+        //model.addAttribute("compCodeList", dataService.getCompCodeDataService().findAllCompCodes());
         return "test";
-    }
+    }*/
 
     @GetMapping(value = "/ticket/job", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody

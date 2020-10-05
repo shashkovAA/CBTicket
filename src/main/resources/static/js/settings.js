@@ -28,7 +28,7 @@ app.controller("SettingsController", function($scope, $http) {
             skpid: "",
             prompt: {},
             description: ""
-        }
+    }
 
     refreshData();
 
@@ -255,9 +255,9 @@ app.controller("SettingsController", function($scope, $http) {
     var selectedPromptIndex;
 
     $scope.editSource = function(source) {
-            console.log("editSource() : source :" + angular.toJson(source));
+
             $scope.showEditSource = true;
-            $scope.promptActionHeader = "Edit Source :";
+            $scope.sourceActionHeader = "Edit Source :";
             $scope.source.id = source.id;
             $scope.source.name = source.name;
             $scope.source.url = source.url;
