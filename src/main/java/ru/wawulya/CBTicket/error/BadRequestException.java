@@ -8,8 +8,5 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class BadRequestException extends RuntimeException {
-    private UUID sessionId;
-    private String method;
-    private String apiUrl;
     private String message;
 }

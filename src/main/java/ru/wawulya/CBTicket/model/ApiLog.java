@@ -18,6 +18,7 @@ public class ApiLog {
     private String requestBody;
     private String responseBody;
     private String statusCode;
+    private String duration;
     private String host;
     private String sessionId;
 }

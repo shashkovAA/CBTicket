@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import ru.wawulya.CBTicket.enums.LogLevel;
 import ru.wawulya.CBTicket.enums.PropertyFieldsEnum;
 import ru.wawulya.CBTicket.enums.PropertyNameEnum;
-import ru.wawulya.CBTicket.error.ApiError;
 import ru.wawulya.CBTicket.error.BadRequestException;
 import ru.wawulya.CBTicket.error.NotFoundException;
+import ru.wawulya.CBTicket.error.NotFoundExceptionOld;
 import ru.wawulya.CBTicket.model.Property;
 import ru.wawulya.CBTicket.model.RequestResult;
 import ru.wawulya.CBTicket.model.Session;
@@ -44,172 +43,92 @@ public class ApiPropertiesController {
     private FileStorageService fileStorageService;
     private DataService dataService;
     private Properties properties;
-    private Utils utils;
 
     @Autowired
-    public ApiPropertiesController(FileStorageService fileStorageService, DataService dataService, Properties properties, Utils utils) {
+    public ApiPropertiesController(FileStorageService fileStorageService, DataService dataService, Properties properties) {
         this.fileStorageService = fileStorageService;
         this.dataService = dataService;
         this.properties = properties;
-        this.utils = utils;
     }
 
     @GetMapping(value = "/property/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Property> getAllProperties(HttpServletRequest request, HttpServletResponse response) {
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
 
-        List<Property> propList = properties.getAllProperties();
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
-        return propList;
+        return properties.getAllProperties();
     }
 
     @GetMapping(value = "/properties/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Property getPropertyById(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") Long id) {
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
 
-        //Property property = dataService.findPropertyById(id);
         Property property = properties.getPropertyById(id);
 
         if (property == null)
-            throw new NotFoundException(getSession().getUuid(),  request.getMethod(), request.getRequestURI(), "Not found");
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                utils.createJsonStr(getSession().getUuid(),property),
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
+            throw new NotFoundException("Not found property with id [" + id + "]");
 
         return property;
     }
 
     @GetMapping(value = "/property/find", produces = MediaType.APPLICATION_JSON_VALUE)
     public Property getPropertyByName(HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "name") String name) {
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
 
-        //Property property = dataService.findPropertyByName(name);
         Property property = properties.getPropertyByName(name);
 
         if (property == null) {
-            throw new NotFoundException(getSession().getUuid(),  request.getMethod(), request.getRequestURI(), "Not found");
+            throw new NotFoundException("Not found property with name [" + name + "]");
         }
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                utils.createJsonStr(getSession().getUuid(),property),
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
 
         return property;
     }
 
     @PostMapping(value = "/property/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public Property addProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody Property property) {
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
 
         Property prop = dataService.getPropertyDataService().addProperty(property);
 
         if (prop == null)
-            throw new BadRequestException(getSession().getUuid(),  request.getMethod(), request.getRequestURI(), "Check log file for details.");
+            throw new BadRequestException("Check log file for details.");
         else
             properties.addProperty(prop);
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                utils.createJsonStr(getSession().getUuid(),prop),
-                utils.createJsonStr(getSession().getUuid(),prop),
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
 
         return prop;
     }
 
     @PutMapping(value = "/property/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public Property updateProperty(HttpServletRequest request, HttpServletResponse response,@RequestBody Property property) {
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
 
         properties.updateProperty(property);
 
         dataService.getPropertyDataService().updateProperty(property);
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                utils.createJsonStr(getSession().getUuid(),property),
-                utils.createJsonStr(getSession().getUuid(),property),
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
 
         return property;
     }
 
     @DeleteMapping(value = "/property/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteProperty(HttpServletRequest request, HttpServletResponse response,@PathVariable("id") Long id) {
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
 
         properties.deleteProperty(id);
 
         dataService.getPropertyDataService().deleteProperty(id);
 
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
     }
 
     @PostMapping("/properties/upload")
-    public RequestResult uploadFileToDB(@RequestParam("file") MultipartFile file) {
-        UUID sessionId = getSession().getUuid();
-        String logMethod ="POST";
-        String logApiUrl = "/api/properties/upload?file=" + file.getOriginalFilename();
-        log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
+    public RequestResult uploadFileToDB(HttpServletRequest request, HttpServletResponse response, @RequestParam("file") MultipartFile file) {
+
 
         //Добавляем список properties в БД
-        Path fileStoragePath = fileStorageService.uploadFile(sessionId, file);
-        List<PropertyDAO> propertyDAOs = dataService.getPropertyDataService().insertPropertyToDBv2(sessionId, fileStoragePath);
+        Path fileStoragePath = fileStorageService.uploadFile(request.getRequestedSessionId(), file);
+        List<PropertyDAO> propertyDAOs = dataService.getPropertyDataService().insertPropertyToDBv2(request.getRequestedSessionId(), fileStoragePath);
 
         //Добавляем список properties в кэш-модель
         propertyDAOs.forEach(p->properties.addProperty(p.toProperty()));
 
-        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
         RequestResult result = new RequestResult("Success","Upload "+propertyDAOs.size()+" records from property file ["+file.getOriginalFilename()+"]");
         return result;
     }
 
-    @GetMapping("/properties/export")
-    public void exportCSV2(HttpServletResponse response) throws Exception {
+    @GetMapping("/property/export")
+    public void exportCSV2(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         //set file name and content type
         String filename = "properties.csv";
@@ -220,7 +139,7 @@ public class ApiPropertiesController {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + filename + "\"");
 
-        List<Property> list = dataService.getPropertyDataService().findAllProperties();
+        List<Property> list = dataService.getPropertyDataService().findAll();
 
         String delimiterStr = properties.getPropertyByName(PropertyNameEnum.EXPORT_DATA_DELIMITER).getValue();
         char delimiter = delimiterStr.replace("\"", "").replace("\'", "").charAt(0);
@@ -240,14 +159,14 @@ public class ApiPropertiesController {
             log.error(e.getMessage());
         }
     }
-
-    @ExceptionHandler(NotFoundException.class)
+/*
+    @ExceptionHandler(NotFoundExceptionOld.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    private ApiError sendNotFoundResponse(NotFoundException except) {
+    private ApiErrorOld sendNotFoundResponse(NotFoundExceptionOld except) {
 
         log.error(except.getSessionId()+ " | Error " + except.getMessage());
 
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, except.getSessionId(), except.getMessage());
+        ApiErrorOld apiError = new ApiErrorOld(HttpStatus.NOT_FOUND, except.getSessionId(), except.getMessage());
         dataService.getLogService().saveLog(except.getSessionId().toString(),LogLevel.WARN,except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "404 NOT FOUND");
         log.error(apiError.toString());
 
@@ -256,11 +175,11 @@ public class ApiPropertiesController {
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ApiError sendBadRequestResponse(BadRequestException except) {
+    private ApiErrorOld sendBadRequestResponse(BadRequestException except) {
 
         log.error(except.getSessionId()+ " | Error :" + except.getMessage());
 
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, except.getSessionId(), except.getMessage());
+        ApiErrorOld apiError = new ApiErrorOld(HttpStatus.BAD_REQUEST, except.getSessionId(), except.getMessage());
         dataService.getLogService().saveLog(except.getSessionId().toString(),LogLevel.ERROR, except.getMethod(),except.getApiUrl(), "",utils.createJsonStr(except.getSessionId(), apiError), "400 BAD REQUEST");
         log.error(apiError.toString());
 
@@ -270,7 +189,7 @@ public class ApiPropertiesController {
     @Lookup
     public Session getSession() {
         return null;
-    }
+    }*/
 
 
 }

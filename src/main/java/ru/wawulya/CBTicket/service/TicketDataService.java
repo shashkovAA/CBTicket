@@ -141,9 +141,10 @@ public class TicketDataService {
             ticketDAO.setFinished(true);
             ticketRepo.save(ticketDAO);
 
-        }
+            return new Ticket(ticketDAO);
 
-        return new Ticket(ticketDAO);
+        } else
+            return null;
 
     }
 

@@ -82,7 +82,7 @@ public class PromptDataService {
     }
 
 
-    public Long deletePrompt(UUID sessionId, Long id) {
+    public Long deletePrompt(String sessionId, Long id) {
         Long promptId = 0L;
 
         Optional<PromptDAO> oPromptDAO = promptRepo.findById(id);

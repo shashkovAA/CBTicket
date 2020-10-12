@@ -39,16 +39,12 @@ import java.util.stream.Stream;
 @RequestMapping(value = "/api/database")
 public class ApiDatabaseController {
 
-    private String logMethod;
-    private String logApiUrl;
 
-    private Utils utils;
     private DataService dataService;
     private Properties properties;
 
     @Autowired
-    public ApiDatabaseController(Utils utils, DataService dataService, Properties properties) {
-        this.utils = utils;
+    public ApiDatabaseController(DataService dataService, Properties properties) {
         this.dataService = dataService;
         this.properties = properties;
     }
@@ -60,30 +56,15 @@ public class ApiDatabaseController {
         int currentPage = apiLogSearch.getPage();
         int pageSize = apiLogSearch.getSize();
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-        log.debug("apiLogSearch = " + apiLogSearch.toString());
-
         Specification<ApiLogDAO> spec = new ApiLogSpecification(apiLogSearch);
         Page<ApiLog> page = dataService.getLogService().findAll(spec, PageRequest.of(currentPage, pageSize));
 
-        dataService.getLogService().saveLog(
-                    getSession().getUuid().toString(),
-                    request.getRemoteUser(),
-                    LogLevel.INFO,
-                    request.getMethod(),
-                    request.getRequestURI(),
-                    "",
-                    "too many records",
-                    String.valueOf(response.getStatus()),
-                    request.getRemoteAddr());
         return page;
     }
 
     @PostMapping(value = "/apilogs/export", produces = MediaType.APPLICATION_JSON_VALUE)
     public void exportApiLogCSV(HttpServletRequest request, HttpServletResponse response, @RequestBody ApiLogSearch apiLogSearch) throws Exception {
 
-         log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-        //set file name and content type
         String filename = "apilog.csv";
 
         response.setContentType("text/csv;charset=UTF8");
@@ -127,16 +108,6 @@ public class ApiDatabaseController {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
     }
 
     @PostMapping(value = "/attempts", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -146,31 +117,16 @@ public class ApiDatabaseController {
         int currentPage = attemptFilter.getPage();
         int pageSize = attemptFilter.getSize();
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-        log.debug("attemptFilter = " + attemptFilter.toString());
-
         Specification<AttemptDAO> spec = new AttemptSpecification(attemptFilter);
         Page<Attempt> page = dataService.getAttemptDataService().findAll(spec, PageRequest.of(currentPage, pageSize));
 
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "too many records",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
         return page;
     }
 
     @PostMapping(value = "/attempts/export", produces = MediaType.APPLICATION_JSON_VALUE)
     public void exportAttemptsCSV(HttpServletRequest request, HttpServletResponse response, @RequestBody AttemptFilter attemptFilter) throws Exception {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-        //set file name and content type
-        String filename = "attempts.csv";
+         String filename = "attempts.csv";
 
         response.setContentType("text/csv;charset=UTF8");
 
@@ -211,16 +167,7 @@ public class ApiDatabaseController {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
+
     }
 
     @PostMapping(value = "/tickets", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -230,30 +177,15 @@ public class ApiDatabaseController {
         int currentPage = ticketFilter.getPage();
         int pageSize = ticketFilter.getSize();
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-        log.debug("ticketFilter = " + ticketFilter.toString());
-
         Specification<TicketDAO> spec = new TicketSpecification(ticketFilter);
         Page<Ticket> page = dataService.getTicketDataService().findAll(spec, PageRequest.of(currentPage, pageSize));
 
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "too many records",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
         return page;
     }
 
     @PostMapping(value = "/tickets/export", produces = MediaType.APPLICATION_JSON_VALUE)
     public void exportTicketsCSV(HttpServletRequest request, HttpServletResponse response, @RequestBody TicketFilter ticketFilter) throws Exception {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-        //set file name and content type
         String filename = "tickets.csv";
 
         response.setContentType("text/csv;charset=UTF8");
@@ -291,16 +223,7 @@ public class ApiDatabaseController {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
+
     }
 
     @PostMapping(value = "/ticketparams", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -310,31 +233,16 @@ public class ApiDatabaseController {
         int currentPage = ticketParamsFilter.getPage();
         int pageSize = ticketParamsFilter.getSize();
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-        log.debug("ticketParamsFilter = " + ticketParamsFilter.toString());
-
         Specification<TicketParamsDAO> spec = new TicketParamsSpecification(ticketParamsFilter);
         Page<TicketParams> page = dataService.getTicketParamsDataService().findAll(spec, PageRequest.of(currentPage, pageSize));
 
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
         return page;
     }
 
     @PostMapping(value = "/ticketparams/export", produces = MediaType.APPLICATION_JSON_VALUE)
     public void exportTicketParamsCSV(HttpServletRequest request, HttpServletResponse response, @RequestBody TicketParamsFilter ticketParamsFilter) throws Exception {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-        //set file name and content type
-        String filename = "ticketparams.csv";
+         String filename = "ticketparams.csv";
 
         response.setContentType("text/csv;charset=UTF8");
 
@@ -375,43 +283,15 @@ public class ApiDatabaseController {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
+
     }
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<User> getUsers(HttpServletRequest request, HttpServletResponse response) {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
+        return dataService.getUserService().getAllUsers();
 
-        List<User> list = dataService.getUserService().getAllUsers();
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
-        return list;
-    }
-
-
-    @Lookup
-    public Session getSession() {
-        return null;
     }
 
 }

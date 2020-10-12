@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
 
+    <property resource="application.properties" />
+
     <property name="LOGS" value="./logs" />
+
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <appender name="Console"
@@ -19,10 +22,10 @@
 
     <appender name="RollingFile"
                              class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/application.log</file>
+        <file>${file.log-dir}/application.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${LOGS}/application%i.log</fileNamePattern>
+            <fileNamePattern>${file.log-dir}/application%i.log</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>9</maxIndex>
         </rollingPolicy>
@@ -36,25 +39,35 @@
                 %d{yyyy-MM-dd HH:mm:ss.SSS} | %5p | %15.15t | %30.30C{1.} | %-20.20M | %m%n%wEx
             </pattern>
         </encoder>
+    </appender>
 
-   <!--         <rollingPolicy
-                    class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                &lt;!&ndash; rollover daily and when the file reaches 10 MegaBytes &ndash;&gt;
-                <fileNamePattern>${LOGS}/archived/application-%d{yyyy-MM-dd}.%i.log
-                </fileNamePattern>
-                <timeBasedFileNamingAndTriggeringPolicy
-                        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                    <maxFileSize>10MB</maxFileSize>
-                </timeBasedFileNamingAndTriggeringPolicy>
-            </rollingPolicy>-->
+    <appender name="RollingAccessFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${file.log-dir}/access.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${file.log-dir}/access%i.log</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>9</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} | %5p | %m%n%wEx
+            </pattern>
+        </encoder>
     </appender>
 
     <appender name="SpringRollingFile"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/spring-boot-logger.log</file>
+        <file>${file.log-dir}/spring-boot-logger.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${LOGS}/spring-boot-logger%i.log</fileNamePattern>
+            <fileNamePattern>${file.log-dir}/spring-boot-logger%i.log</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>9</maxIndex>
         </rollingPolicy>
@@ -86,6 +99,14 @@
     <logger name="ru.wawulya" level="debug" additivity="false">
         <appender-ref  ref="RollingFile"/>
         <appender-ref ref="Console" />
+    </logger>
+
+    <logger name="ru.wawulya.CBTicket.utility.LoggingHandler" level="debug" additivity="false">
+        <appender-ref  ref="RollingAccessFile"/>
+    </logger>
+
+    <logger name="ru.wawulya.CBTicket.config.CustomTraceRepository" level="debug" additivity="false">
+        <appender-ref  ref="RollingAccessFile"/>
     </logger>
 
     <logger name="org.hibernate" level="warn" additivity="false">

@@ -1,25 +1,27 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <title>CBTicket Logs</title>
+    <title>CBTicket</title>
     <link   th:href="@{/css/common.css}" rel="stylesheet" />
     <link   th:href="@{/css/materialize.min.css}" rel="stylesheet" media="screen,projection"/>
     <head>
-    <body class="grey lighten-5" ng-app="ManagementModule" ng-controller="LogsController">
-
+</head>
+<body>
         <nav>
             <div class="nav-wrapper">
                 <div class="row">
                     <div class="col s10 offset-s1">
                         <ul id="nav-mobile" class="left hide-on-med-and-down">
-                            <li><a href="home">Home</a></li>
+                            <li class="active"><a href="home">Home</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="config">Config</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="settings">Settings</a></li>
                             <li><a href="database">Database</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="account">Users</a></li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="test">Testing</a></li>
-                            <li class="active"><a href="logs">Logs</a></li>
+                            <li><a href="logs">Logs</a></li>
+                            <li><a href="about" class="active">About</a></li>
 
                         </ul>
                         <ul id="nav-mobile-logout" class="right hide-on-med-and-down">
@@ -36,40 +38,10 @@
         </nav>
 
         <div class="row">
-            <div class="col s10 offset-s1">
-                <h4>
-                    Logs management page
-                </h4>
-
-
-                <table class="striped">
-                    <tr>
-                        <th>Filename</th>
-                        <th>Size</th>
-                        <th>Modify</th>
-                    </tr>
-
-                    <tr ng-repeat="log in logs">
-                        <td> <a href="api/logs/download/{{log.filename}}">{{log.filename}}</a></td>
-                        <td >{{ log.filesize }}</td>
-                        <td >{{ log.lastModifyDate }}</td>
-                        <td>
-                            <a title="Delete" ng-confirm-click="Are you sure to delete file [{{log.filename}}] " confirmed-click="deleteLogFile(log)">
-                                <img class="scale" th:src="@{/images/delete1.png}" width="25" height="25" />
-                            </a>
-                        </td>
-
-                    </tr>
-
-                </table>
+            <div class="col s12 offset-s1">
+            <iframe>src="http://localhost:8085/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config"</iframe>
             </div>
         </div>
+</body>
 
-        <br/>
-
-    </body>
-    <script th:src="@{angular.js}"></script>
-    <script th:src="@{js/materialize.min.js}"></script>
-    <script th:src="@{/js/mainApp.js}"></script>
-    <script th:src="@{/js/logs.js}"></script>
 </html>

@@ -16,6 +16,14 @@ app.controller("LogsController", function($scope, $http) {
         console.log("ttttttttttttttttttt: ");
      }
 
+    $scope.deleteLogFile = function(log) {
+
+            $http({
+                method: 'DELETE',
+                url: '/api/logs/' + log.filename
+            }).then(_success, _error);
+    };
+
     function refreshData() {
         $http({
             method: 'GET',

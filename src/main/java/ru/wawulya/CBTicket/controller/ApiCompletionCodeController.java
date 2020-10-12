@@ -34,62 +34,28 @@ import java.util.UUID;
 public class ApiCompletionCodeController {
 
     private DataService dataService;
-    private Utils utils;
     private Properties properties;
 
     @Autowired
-    public ApiCompletionCodeController (DataService dataService, Utils utils,  Properties properties) {
+    public ApiCompletionCodeController (DataService dataService, Properties properties) {
         this.dataService = dataService;
-        this.utils = utils;
         this.properties = properties;
     }
 
     @GetMapping(value = "/compcode/fetch", produces = MediaType.APPLICATION_JSON_VALUE)
     public CompletionCode getCompCodeBySysName(HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "sysname") String sysname) {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-
-        CompletionCode completionCode = dataService.getCompCodeDataService().getOrCreateCompCode(sysname);
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                utils.createJsonStr(getSession().getUuid(), completionCode),
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
-
-        return completionCode;
+        return dataService.getCompCodeDataService().getOrCreateCompCode(sysname);
     }
 
     @GetMapping(value = "/compcode/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CompletionCode> getAll(HttpServletRequest request, HttpServletResponse response) {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-
-        List<CompletionCode> completionCodeList = dataService.getCompCodeDataService().findAllCompCodes();
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                utils.createJsonStr(getSession().getUuid(), completionCodeList),
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
-
-        return completionCodeList;
+        return dataService.getCompCodeDataService().findAllCompCodes();
     }
 
     @GetMapping("/compcode/export")
-    public void exportCSV(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws Exception {
-
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
+    public void exportCSV(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String filename = "compcode.csv";
 
@@ -117,21 +83,7 @@ public class ApiCompletionCodeController {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
-    }
 
-    @Lookup
-    public Session getSession() {
-        return null;
     }
 
 }

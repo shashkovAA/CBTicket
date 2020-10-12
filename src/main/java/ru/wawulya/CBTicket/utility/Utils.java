@@ -17,7 +17,7 @@ import java.util.UUID;
 @Component
 public class Utils {
 
-    public Timestamp getTimeStamp(UUID sessionId, String jsonDateParamName, String customDate) {
+    public Timestamp getTimeStamp(String sessionId, String jsonDateParamName, String customDate) {
 
         Timestamp timestamp = null;
 
@@ -62,6 +62,28 @@ public class Utils {
             output = Obj.writeValueAsString(object);
         } catch (JsonProcessingException except) {
             log.error(sessioId + " | Error :" + except.getMessage());
+        }
+        return output;
+    }
+
+    public String createJsonStr(String sessioId, Object object) {
+        ObjectMapper Obj = new ObjectMapper();
+        String output = "";
+        try {
+            output = Obj.writeValueAsString(object);
+        } catch (JsonProcessingException except) {
+            log.error(sessioId + " | Error :" + except.getMessage());
+        }
+        return output;
+    }
+
+    public String createJsonStr(Object object) {
+        ObjectMapper Obj = new ObjectMapper();
+        String output = "";
+        try {
+            output = Obj.writeValueAsString(object);
+        } catch (JsonProcessingException except) {
+            log.error("Error :" + except.getMessage());
         }
         return output;
     }

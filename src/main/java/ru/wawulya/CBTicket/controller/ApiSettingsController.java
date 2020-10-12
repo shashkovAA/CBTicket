@@ -24,6 +24,8 @@ import ru.wawulya.CBTicket.service.FileStorageService;
 import ru.wawulya.CBTicket.service.RestartService;
 import ru.wawulya.CBTicket.utility.Utils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -71,11 +73,7 @@ public class ApiSettingsController {
     }
 
     @GetMapping(value = "/settings/files", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ConfigFile> getLogFiles() throws IOException {
-        UUID sessionId = getSession().getUuid();
-        String logMethod ="GET";
-        String logApiUrl = "/api/settings/files";
-        log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
+    public List<ConfigFile> getLogFiles(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         List<File> files = null;
 
@@ -92,33 +90,22 @@ public class ApiSettingsController {
             configFiles.add(new ConfigFile(f.getName(), utils.convertMilsToDate(f.lastModified())));
         });
 
-        dataService.getLogService().saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,configFiles),"200 OK");
         return configFiles;
     }
 
     @PostMapping("/settings/upload")
-    public RequestResult uploadFileToDB(@RequestParam("file") MultipartFile file) {
-        UUID sessionId = getSession().getUuid();
-        String logMethod ="POST";
-        String logApiUrl = "/api/settings/upload?file=" + file.getOriginalFilename();
-        log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
+    public RequestResult uploadFileToDB(HttpServletRequest request, HttpServletResponse response, @RequestParam("file") MultipartFile file) {
 
         //Добавляем список properties в БД
-        Path fileStoragePath = fileStorageService.storeConfigFile(sessionId, file);
+        Path fileStoragePath = fileStorageService.storeConfigFile(request.getRequestedSessionId(), file);
 
-        dataService.getLogService().saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
         RequestResult result = new RequestResult("Success","Upload " + file.getOriginalFilename());
         return result;
     }
 
     @GetMapping("/settings/download/{fileName:.+}")
-    public ResponseEntity downloadLogFile(@PathVariable String fileName) {
-        UUID sessionId = getSession().getUuid();
-        String logMethod ="GET";
-        String logApiUrl = "/api/settings/download/" + fileName;
-        log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
+    public ResponseEntity downloadLogFile(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileName) {
 
-        //TODO Предусмотреть путь не через hardcode
         String fileBasePath = fileStorageService.getConfigStorageLocation().toString() + "\\"+ fileName;
         Path path = Paths.get(fileBasePath);
         Resource resource = null;
@@ -131,7 +118,6 @@ public class ApiSettingsController {
             e.printStackTrace();
         }
 
-        dataService.getLogService().saveLog(sessionId.toString(), LogLevel.INFO,logMethod,logApiUrl,"",utils.createJsonStr(sessionId,resource),"200 OK");
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("text/html"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
@@ -139,13 +125,9 @@ public class ApiSettingsController {
     }
 
     @DeleteMapping(value = "/settings/{filename}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RequestResult deleteProperty(@PathVariable("filename") String filename) {
-        UUID sessionId = getSession().getUuid();
-        String logMethod ="DELETE";
-        String logApiUrl = "/api/settings/" + filename;
-        log.info(sessionId + " | REST " + logMethod + " " + logApiUrl);
+    public RequestResult deleteProperty(HttpServletRequest request, HttpServletResponse response, @PathVariable("filename") String filename) {
 
-        boolean deleteResult = fileStorageService.deleteFile(sessionId, filename);
+        boolean deleteResult = fileStorageService.deleteFile(request.getRequestedSessionId(), filename);
         RequestResult result = null;
 
         if (deleteResult) {
@@ -154,12 +136,7 @@ public class ApiSettingsController {
         } else
             throw new MyFileNotFoundException("File not found " + filename);
 
-        dataService.getLogService().saveLog(sessionId.toString(),LogLevel.INFO,logMethod,logApiUrl, "","","200 OK");
         return result;
     }
 
-    @Lookup
-    public Session getSession() {
-        return null;
-    }
 }

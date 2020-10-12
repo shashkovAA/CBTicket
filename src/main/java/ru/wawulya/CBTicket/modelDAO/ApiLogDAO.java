@@ -41,6 +41,9 @@ public class ApiLogDAO {
     @Column(name="status_code")
     private String statusCode;
 
+    @Column(name="duration")
+    private String duration;
+
     @Column(columnDefinition = "varchar(100)")
     private String host;
 
@@ -48,15 +51,20 @@ public class ApiLogDAO {
     private String sessionId;
 
 
-    public ApiLogDAO(String level, String method, String apiUrl, String requestBody, String responseBody, String statusCode) {
-        this.level = level;
-        this.method = method;
-        this.apiUrl = apiUrl;
-        this.requestBody = requestBody;
-        this.responseBody = responseBody;
-        this.statusCode = statusCode;
+    public ApiLogDAO(ApiLog apiLog) {
+        this.date = apiLog.getDate();
+        this.sessionId = apiLog.getSessionId();
+        this.username = apiLog.getUsername();
+        this.level = apiLog.getLevel();
+        this.method = apiLog.getMethod();
+        this.apiUrl = apiLog.getApiUrl();
+        this.requestBody = apiLog.getRequestBody();
+        this.responseBody = apiLog.getResponseBody();
+        this.statusCode = apiLog.getStatusCode();
+        this.duration = apiLog.getDuration();
+        this.host = apiLog.getHost();
     }
-
+/*
     public ApiLogDAO(String sessionId, String level, String method, String apiUrl, String requestBody, String responseBody, String statusCode) {
         this.level = level;
         this.method = method;
@@ -88,7 +96,7 @@ public class ApiLogDAO {
         this.sessionId = sessionId;
         this.username = username;
         this.host = host;
-    }
+    }*/
 
     public ApiLog toApiLog() {
         ApiLog apiLog = new ApiLog();
@@ -100,6 +108,7 @@ public class ApiLogDAO {
         apiLog.setRequestBody(requestBody);
         apiLog.setResponseBody(responseBody);
         apiLog.setStatusCode(statusCode);
+        apiLog.setDuration(duration);
         apiLog.setHost(host);
         apiLog.setSessionId(sessionId);
         return apiLog;

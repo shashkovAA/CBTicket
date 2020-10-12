@@ -15,6 +15,7 @@ import ru.wawulya.CBTicket.enums.LogLevel;
 import ru.wawulya.CBTicket.error.MyFileNotFoundException;
 import ru.wawulya.CBTicket.model.*;
 import ru.wawulya.CBTicket.service.DataService;
+import ru.wawulya.CBTicket.service.FileStorageService;
 import ru.wawulya.CBTicket.utility.Utils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,22 +40,23 @@ public class ApiLogsController {
 
     private Utils utils;
     private DataService dataService;
+    private FileStorageService fileStorageService;
 
     @Autowired
-    public ApiLogsController(DataService dataService, Utils utils) {
+    public ApiLogsController(DataService dataService, Utils utils, FileStorageService fileStorageService) {
         this.dataService = dataService;
         this.utils = utils;
+        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping(value = "/logs", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<LogFile> getLogFiles(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-
         List<File> files = null;
 
-        try (Stream<Path> paths = Files.walk(Paths.get("logs"))) {
+        //try (Stream<Path> paths = Files.walk(Paths.get("logs"))) {
+        try (Stream<Path> paths = Files.walk(fileStorageService.getLogsStorageLocation())) {
             files = paths
                     .filter(Files::isRegularFile)
                     .map(Path::toFile)
@@ -67,17 +69,6 @@ public class ApiLogsController {
             logs.add(new LogFile(f.getName(), utils.humanReadableByteCountBin(f.length()), utils.convertMilsToDate(f.lastModified())));
         });
 
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                utils.createJsonStr(getSession().getUuid(), logs),
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
-
         return logs;
     }
 
@@ -85,11 +76,7 @@ public class ApiLogsController {
     @ResponseBody
     public ResponseEntity downloadLogFile(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileName) {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-
-        //TODO Предусмотреть путь не через hardcode
-        String fileBasePath = "logs/";
-        Path path = Paths.get(fileBasePath + fileName);
+        Path path = fileStorageService.getLogsStorageLocation().resolve(fileName);
         Resource resource = null;
 
         try {
@@ -101,25 +88,26 @@ public class ApiLogsController {
             e.printStackTrace();
         }
 
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                utils.createJsonStr(getSession().getUuid(), resource),
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
-
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("text/html"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
 
-    @Lookup
-    public Session getSession() {
-        return null;
+    @DeleteMapping(value = "/logs/{filename}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public RequestResult deleteFile(HttpServletRequest request, HttpServletResponse response, @PathVariable("filename") String filename) {
+
+        boolean deleteResult = fileStorageService.deleteLogFile(request.getRequestedSessionId(), filename);
+        RequestResult result = null;
+
+        if (deleteResult) {
+            result = new RequestResult("Success", "Delete  " + filename);
+
+        } else
+            throw new MyFileNotFoundException("File not found or can't be deleted [" + filename + "]");
+
+        return result;
     }
+
 }

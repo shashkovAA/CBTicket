@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, proxyTargetClass = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -92,10 +94,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             http
                     .antMatcher("/api/**")
-                    .antMatcher("/test/**")
                     .authorizeRequests()
                     .anyRequest()
                     .hasAnyRole("API","USER","ADMIN")
+
 
             .and()
                     .httpBasic()
@@ -114,10 +116,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                     .csrf()
                     .disable();
-
             /*http
                     .requestMatcher(EndpointRequest.toAnyEndpoint()).authorizeRequests((requests) ->
                     requests.anyRequest().permitAll());*/
+
 
             http
                     .authorizeRequests()
@@ -144,7 +146,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     }
-
 
     /*@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

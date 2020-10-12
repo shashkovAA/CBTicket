@@ -12,5 +12,6 @@ public class FileStorageConfig {
     private String uploadDir;
     private String downloadDir;
     private String configDir;
+    private String logDir;
 
 }

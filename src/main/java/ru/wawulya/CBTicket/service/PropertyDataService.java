@@ -92,7 +92,7 @@ public class PropertyDataService {
             propRepo.save(new PropertyDAO(PropertyNameEnum.EXPORT_DATA_DELIMITER, "';'", "Символ-разделитель, используемый при экспорте данных в csv-файл.", true, false));
         }
 
-        List<Property> propList = findAllProperties();
+        List<Property> propList = findAll();
         log.debug("Loaded " + propList.size()+ " properties from DB.");
 
         propList.forEach(property-> properties.addProperty(property));
@@ -111,7 +111,7 @@ public class PropertyDataService {
         return prop;
     }
 
-    public List<PropertyDAO> insertPropertyToDBv2(UUID sessionId , Path path) {
+    public List<PropertyDAO> insertPropertyToDBv2(String sessionId , Path path) {
 
         List<PropertyDAO> parsedPropList = new ArrayList<>();
 
@@ -159,7 +159,7 @@ public class PropertyDataService {
         return propRepo.findAll(pageRequest);
     }
 
-    public List<Property> findAllProperties() {
+    public List<Property> findAll() {
         return propRepo.findAll().stream().map(p->p.toProperty()).collect(Collectors.toList());
     }
 

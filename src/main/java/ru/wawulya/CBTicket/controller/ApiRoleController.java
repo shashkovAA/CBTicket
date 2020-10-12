@@ -28,33 +28,17 @@ import java.util.stream.Collectors;
 public class ApiRoleController {
 
     private DataService dataService;
-    private Utils utils;
 
     @Autowired
-    public ApiRoleController(DataService dataService, Utils utils) {
+    public ApiRoleController(DataService dataService) {
         this.dataService = dataService;
-        this.utils = utils;
     }
 
     @GetMapping(value = "/roles", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<Role> getRoles(HttpServletRequest request, HttpServletResponse response) {
 
-        log.info(getSession().getUuid() + " | REST " + request.getMethod() + " " + request.getRequestURI());
-
-        List<Role> list = dataService.getRoleService().findAll();
-
-        dataService.getLogService().saveLog(
-                getSession().getUuid().toString(),
-                request.getRemoteUser(),
-                LogLevel.INFO,
-                request.getMethod(),
-                request.getRequestURI(),
-                "",
-                "",
-                String.valueOf(response.getStatus()),
-                request.getRemoteAddr());
-        return list;
+        return dataService.getRoleService().findAll();
     }
 
     /*@GetMapping(value = "/roles", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,9 +54,5 @@ public class ApiRoleController {
         return roleList;
     }*/
 
-    @Lookup
-    public Session getSession() {
-        return null;
-    }
 
 }

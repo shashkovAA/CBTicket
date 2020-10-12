@@ -8,7 +8,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.wawulya.CBTicket.config.FileStorageConfig;
 import ru.wawulya.CBTicket.error.FileStorageException;
-import ru.wawulya.CBTicket.error.MyFileNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +25,7 @@ public class FileStorageService {
     private final Path uploadFileStorageLocation;
     private final Path downloadFileStorageLocation;
     private final Path configStorageLocation;
+    private final Path logsStorageLocation;
 
     @Autowired
     public FileStorageService(FileStorageConfig fileStorageConfig) {
@@ -44,16 +44,22 @@ public class FileStorageService {
                                     .toAbsolutePath()
                                     .normalize();
 
+        this.logsStorageLocation = Paths
+                .get(fileStorageConfig.getLogDir())
+                .toAbsolutePath()
+                .normalize();
+
         try {
             Files.createDirectories(this.uploadFileStorageLocation);
             Files.createDirectories(this.downloadFileStorageLocation);
             Files.createDirectories(this.configStorageLocation);
+            Files.createDirectories(this.logsStorageLocation);
         } catch (Exception ex) {
             throw new FileStorageException("Could not create the directories ...", ex);
         }
     }
 
-    public Path uploadFile(UUID sessionId, MultipartFile file) {
+    public Path uploadFile(String sessionId, MultipartFile file) {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         log.info(sessionId + " | file.getOriginalFilename() : " + file.getOriginalFilename());
@@ -75,7 +81,7 @@ public class FileStorageService {
         }
     }
 
-    public Path storeConfigFile(UUID sessionId, MultipartFile file) {
+    public Path storeConfigFile(String sessionId, MultipartFile file) {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         log.info(sessionId + " | file.getOriginalFilename() : " + file.getOriginalFilename());
@@ -97,7 +103,7 @@ public class FileStorageService {
         }
     }
 
-       public boolean deleteFile(UUID sessionId, String filename) {
+    public boolean deleteFile(String sessionId, String filename) {
             // Check if the file's name contains invalid characters
             Path targetFilePath = this.configStorageLocation.resolve(filename);
 
@@ -115,17 +121,29 @@ public class FileStorageService {
 
     }
 
-    /*public Resource loadFileAsResource(String fileName) {
-        try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
-                return resource;
-            } else {
-                throw new MyFileNotFoundException("File not found " + fileName);
+    public boolean deleteLogFile(String sessionId, String filename) {
+
+        Path targetFilePath = this.logsStorageLocation.resolve(filename);
+
+        File deletingFile = targetFilePath.toFile();
+
+        if (deletingFile.exists()) {
+            boolean res = deletingFile.delete();
+            if (res) {
+                log.debug("File deleted successfully [" + targetFilePath.toString() + "]");
+                return true;
             }
-        } catch (MalformedURLException ex) {
-            throw new MyFileNotFoundException("File not found " + fileName, ex);
+            else {
+                log.debug("File can't be deleted [" + targetFilePath.toString() + "]");
+                return false;
+            }
+
         }
-    }*/
+        else {
+            log.warn("File : " + targetFilePath.toString() + " not found!");
+            return false;
+        }
+
+    }
+
 }
